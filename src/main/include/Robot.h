@@ -11,8 +11,8 @@
 
 #include "Drive.hpp"
 
-#include <IterativeRobot.h>
-#include <SmartDashboard/SendableChooser.h>
+#include <frc/IterativeRobot.h>
+#include <frc/SmartDashboard/SendableChooser.h>
 
 class Robot : public frc::IterativeRobot {
  public:

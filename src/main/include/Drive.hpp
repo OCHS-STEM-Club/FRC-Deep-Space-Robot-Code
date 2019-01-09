@@ -1,16 +1,20 @@
 #pragma once
 
+#include <iostream>
+#include <frc/WPILib.h>
 #include <frc/Joystick.h>
-#include <ctre/Phoenix.h> 
-#include <Drive/DifferentialDrive.h>
+//#include <frc/MotorSafety.h>
+//#include <frc/RobotDriveBase.h>
+//#include <frc/DifferentialDrive.h>
+#include <ctre/Phoenix.h>
 
 class DriveManager {
     private:
-    Joystick *stick; 
+    frc::Joystick *stick; 
     WPI_TalonSRX *driveMotorLeft; 
     WPI_TalonSRX *driveMotorRight; 
 
-    DifferentialDrive *tankDrive;
+    frc::DifferentialDrive *tankDrive;
 
     double *xStickValue;
     double *yStickValue;

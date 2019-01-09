@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include <SmartDashboard/SmartDashboard.h>
+#include <frc/SmartDashboard/SmartDashboard.h>
 
 #include "Drive.hpp"
 
@@ -19,6 +19,7 @@
 
 Robot::Robot() {
   driveManager = new DriveManager();
+  frc::Joystick stick { 0 };
 }
 
 void Robot::RobotInit() {
