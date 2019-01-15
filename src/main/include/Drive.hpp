@@ -3,21 +3,30 @@
 #include <iostream>
 #include <frc/WPILib.h>
 #include <frc/Joystick.h>
-//#include <frc/MotorSafety.h>
-//#include <frc/RobotDriveBase.h>
-//#include <frc/DifferentialDrive.h>
 #include <ctre/Phoenix.h>
+#include <AHRS.h> 
 
 class DriveManager {
     private:
     frc::Joystick *stick; 
-    WPI_TalonSRX *driveMotorLeft; 
-    WPI_TalonSRX *driveMotorRight; 
+    WPI_TalonSRX *driveMotorFrontLeft; 
+    WPI_TalonSRX *driveMotorFrontRight; 
+    WPI_TalonSRX *driveMotorBackLeft; 
+    WPI_TalonSRX *driveMotorBackRight; 
 
-    frc::DifferentialDrive *tankDrive;
+    frc::MecanumDrive *mecanumDrive;
+
+    AHRS *ahrs; 
 
     double *xStickValue;
     double *yStickValue;
+    double *zStickValue;
+
+    double *driveGyro; 
+    double *gyro;
+
+    bool *driveToggle; 
+    bool *driveLatch; 
 
     public:
     DriveManager();
