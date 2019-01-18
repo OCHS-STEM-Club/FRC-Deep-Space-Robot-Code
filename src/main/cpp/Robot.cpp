@@ -77,7 +77,9 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
+	
   driveManager->driveTrain();
+
   if (abs(stick.GetX()) < .1)
 		{
 			joystickDeadBandX = 0;
