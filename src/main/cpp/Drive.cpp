@@ -42,14 +42,48 @@ DriveManager::DriveManager () {
 
     driveToggle = new bool;  
     driveLatch = new bool; 
-    *driveToggle = false;
+    *driveToggle = true;
     *driveLatch = false;
 }
 
 void DriveManager::driveTrain() {
-    *xStickValue = -stick->GetRawAxis(0);
-    *yStickValue = -stick->GetRawAxis(1);
-    *zStickValue = stick->GetRawAxis(2);
+    //*xStickValue = -stick->GetRawAxis(0);
+    //*yStickValue = -stick->GetRawAxis(1);
+    //*zStickValue = stick->GetRawAxis(2);
+
+    if (abs(stick->GetRawAxis(1)) < .2)
+		{
+			*xStickValue = 0;
+		}
+		//Otherwise set to joystick value
+		else
+		{
+			*xStickValue = -stick->GetRawAxis(1);
+		}
+
+		//Repeat of above for Y
+		if (-stick->GetRawAxis(0) < -0.1 and -stick->GetRawAxis(0) > 0.4)
+		{
+			*yStickValue = 0;
+		}
+		else
+		{
+			*yStickValue = stick->GetRawAxis(0);
+		}
+
+		//Repeat of above for Z
+		if (abs(stick->GetRawAxis(2)) < .1)
+		{
+			*zStickValue = 0;
+		}
+		else
+		{
+			*zStickValue = stick->GetRawAxis(2);
+		}
+
+    frc::SmartDashboard::PutNumber("joystickY", stick->GetRawAxis(1));
+    frc::SmartDashboard::PutNumber("joystickx", stick->GetRawAxis(1));
+
 
     if (stick->GetRawButton(3) and !*driveLatch) {
         *driveToggle = !*driveToggle;

@@ -19,7 +19,6 @@
 
 Robot::Robot() {
   driveManager = new DriveManager();
- 
 }
 
 void Robot::RobotInit() {
@@ -50,9 +49,6 @@ void Robot::RobotPeriodic() {}
  * make sure to add them to the chooser code above as well.
  */
 frc::Joystick stick { 0 };
-  float joystickDeadBandX = 0;
-	float joystickDeadBandY = 0;
-	float joystickDeadBandZ = 0;
 
 void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
@@ -79,36 +75,6 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
 	
   driveManager->driveTrain();
-
-  if (abs(stick.GetX()) < .1)
-		{
-			joystickDeadBandX = 0;
-		}
-		//Otherwise set to joystick value
-		else
-		{
-			joystickDeadBandX = stick.GetX();
-		}
-		//Repeat of above for Y
-		if (abs(stick.GetY()) < .1)
-		{
-			joystickDeadBandY = 0;
-		}
-
-		else
-		{
-			joystickDeadBandY = -stick.GetY();
-		}
-		//Repeat of above for Z
-		if (abs(stick.GetZ()) < .1)
-		{
-			joystickDeadBandZ = 0;
-		}
-
-		else
-		{
-			joystickDeadBandZ = stick.GetZ();
-		}
 
 }
 
