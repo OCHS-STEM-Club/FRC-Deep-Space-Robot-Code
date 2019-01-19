@@ -9,8 +9,10 @@
 
 #include <string>
 
+#include "Drive.hpp"
+
 #include <frc/IterativeRobot.h>
-#include <frc/smartdashboard/SendableChooser.h>
+#include <frc/SmartDashboard/SendableChooser.h>
 
 class Robot : public frc::IterativeRobot {
  public:
@@ -21,10 +23,13 @@ class Robot : public frc::IterativeRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
+  Robot();
 
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
+
+  DriveManager *driveManager; 
 };

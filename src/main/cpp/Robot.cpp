@@ -10,11 +10,20 @@
 
 #include <iostream>
 
-#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/SmartDashboard/SmartDashboard.h>
+
+#include "Drive.hpp"
+
+#include <ctre/Phoenix.h> 
+#include <frc/Joystick.h>
+
+Robot::Robot() {
+  driveManager = new DriveManager();
+}
 
 void Robot::RobotInit() {
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+  m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
+  m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -39,6 +48,8 @@ void Robot::RobotPeriodic() {}
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
+frc::Joystick stick { 0 };
+
 void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString(
@@ -61,11 +72,14 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {}
+void Robot::TeleopPeriodic() {
+	
+  driveManager->driveTrain();
 
-void Robot::TeleopPeriodic() {}
+}
 
 void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+START_ROBOT_CLASS(Robot)
 #endif
