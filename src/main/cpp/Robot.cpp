@@ -13,12 +13,14 @@
 #include <frc/SmartDashboard/SmartDashboard.h>
 
 #include "Drive.hpp"
+#include "Pixy.hpp"
 
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
 
 Robot::Robot() {
   driveManager = new DriveManager();
+  pixyManager = new PixyManager();
 }
 
 void Robot::RobotInit() {
@@ -75,7 +77,7 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
 	
   driveManager->driveTrain();
-
+  pixyManager->pixy();
 }
 
 void Robot::TestPeriodic() {}
