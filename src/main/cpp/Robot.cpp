@@ -13,12 +13,18 @@
 #include <frc/SmartDashboard/SmartDashboard.h>
 
 #include "Drive.hpp"
+#include "Vision.hpp"
 
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
+#include <frc/I2C.h>
+
+typedef unsigned char byte;
 
 Robot::Robot() {
   driveManager = new DriveManager();
+  pixyManager = new PixyManager();
+
 }
 
 void Robot::RobotInit() {
@@ -48,7 +54,6 @@ void Robot::RobotPeriodic() {}
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-frc::Joystick stick { 0 };
 
 void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
@@ -71,14 +76,19 @@ void Robot::AutonomousPeriodic() {
   }
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+  //byte buff[31];
+  //I2CPixy->Write(0x54, *buff);
+}
 void Robot::TeleopPeriodic() {
 	
   driveManager->driveTrain();
-
+  pixyManager->pixy();
 }
 
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+
+}
 
 #ifndef RUNNING_FRC_TESTS
 START_ROBOT_CLASS(Robot)
