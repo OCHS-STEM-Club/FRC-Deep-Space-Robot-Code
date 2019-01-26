@@ -27,11 +27,18 @@ Robot::Robot() {
 
 }
 
+frc::Joystick *stick;
+
 void Robot::RobotInit() {
   m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  stick = new frc::Joystick{ 0 };
+
 }
+
+
 
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -77,17 +84,22 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-  //byte buff[31];
-  //I2CPixy->Write(0x54, *buff);
 }
+
 void Robot::TeleopPeriodic() {
-	
-  driveManager->driveTrain();
+  //driveManager->driveTrain();
   pixyManager->pixy();
+
+  if (stick->GetRawButton(12)) {
+    pixyManager->pixyFunct();
+  }
+  else {
+    driveManager->driveTrain();
+  } 
 }
 
 void Robot::TestPeriodic() {
-
+  
 }
 
 #ifndef RUNNING_FRC_TESTS
