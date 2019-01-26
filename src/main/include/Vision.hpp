@@ -4,14 +4,21 @@
 #include <frc/WPILib.h>
 #include <frc/Joystick.h>
 #include <frc/I2C.h>
+#include <cmath>
 
 #include "Drive.hpp"
 
 #define I2C_ADDRESS 0x64
 
 #define PIXY_CENTER_X 170
-#define PIXY_DEADBAND_X 5
+#define PIXY_DEADBAND_X 35
+
+#define PIXY_DEADBAND_TURN 0.55
 #define ANTI_MISSILE_CODE 0.35
+#define PIXY_DEADBAND_DISTANCE 0.45
+
+#define PIXY_DISTANCE_X 98 //2ft
+#define PIXY_DISTANCE_DEADBAND 4
 
 typedef unsigned char byte;
 
@@ -37,7 +44,7 @@ float Pixyh2;
 double xCenter;
 double target;
 double distanceToIdealCenter;
-double straifCorrectionToIdealCenter;
+double strafeCorrectionToIdealCenter;
 bool goodTargets; 
 
 bool leftTargetBig;
@@ -45,6 +52,10 @@ double bigSize;
 double smallSize;
 double turnOffset;
 double turnWant;
+
+double pixyDistanceBetweenTargets;
+double pixyDistanceCorrection;
+double driveCorrection;
 
 public:
     PixyManager();

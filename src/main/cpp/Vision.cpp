@@ -11,7 +11,8 @@ PixyManager::PixyManager () {
 
 void PixyManager::pixy() {
   byte buff[31];
-  I2CPixy->Read(0x64, 31, buff);
+  I2CPixy->Read(I2C_ADDRESS, 31, buff);
+
 
   if (!(buff[1] == buff[2])) {
     if (buff[0] == 0) {
@@ -107,28 +108,36 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("pixy14", translate[14]);
   frc::SmartDashboard::PutNumber("pixy15", translate[15]); 
 
-  if (stick->GetRawButton(10)) {
-    I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS);
-  }
+  pixyDistanceBetweenTargets = abs(Pixyx1-Pixyx2);
+  frc::SmartDashboard::PutNumber("pixyDistanceBetweenTargets", pixyDistanceBetweenTargets);
+
 }
 
 void PixyManager::pixyFunct() {
   distanceToIdealCenter = ((1.0 * Pixyx1 + Pixyx2) / 2) - PIXY_CENTER_X;
 
-  straifCorrectionToIdealCenter = (distanceToIdealCenter/150) * 0.5;
+  strafeCorrectionToIdealCenter = (distanceToIdealCenter/150) * 0.685;
 
-  if (straifCorrectionToIdealCenter > ANTI_MISSILE_CODE) {
-    straifCorrectionToIdealCenter = ANTI_MISSILE_CODE;
+  if (strafeCorrectionToIdealCenter > ANTI_MISSILE_CODE) {
+    strafeCorrectionToIdealCenter = ANTI_MISSILE_CODE;
   }
 
-  if (straifCorrectionToIdealCenter < -ANTI_MISSILE_CODE) {
-    straifCorrectionToIdealCenter = -ANTI_MISSILE_CODE;
+  if (strafeCorrectionToIdealCenter < -ANTI_MISSILE_CODE) {
+    strafeCorrectionToIdealCenter = -ANTI_MISSILE_CODE;
   }
 
   //xCenter is the center of the 2 x points in relation to the current screen pixels
   xCenter = (1.0 * Pixyx1 + Pixyx2) / 2;
-  if (((PIXY_CENTER_X - PIXY_DEADBAND_X) < xCenter)  &&  ((PIXY_CENTER_X + PIXY_DEADBAND_X) > xCenter)) {
-    straifCorrectionToIdealCenter = 0;
+  // if (((PIXY_CENTER_X - PIXY_DEADBAND_X) < xCenter)  &&  ((PIXY_CENTER_X + PIXY_DEADBAND_X) > xCenter)) {
+  //   strafeCorrectionToIdealCenter = 0;
+  // }
+
+  if(abs(PIXY_CENTER_X-xCenter) < PIXY_DEADBAND_X) {
+    strafeCorrectionToIdealCenter = 0;
+    frc::SmartDashboard::PutBoolean("deadbandTest", true);
+  }
+  else {
+    frc::SmartDashboard::PutBoolean("deadbandTest", false);
   }
 
 //turn correction 
@@ -147,21 +156,48 @@ void PixyManager::pixyFunct() {
     turnOffset = bigSize - smallSize;
   }
 
-  turnWant = ((1.0 * turnOffset/350) * 0.865);
+  turnWant = ((1.0 * turnOffset/200) * 0.635);
 
-  if (turnWant > 0.45) {
-    turnWant = 0.45;
+  if (turnWant > PIXY_DEADBAND_TURN) {
+    turnWant = PIXY_DEADBAND_TURN;
   }
 
-  if (turnWant < -0.45) {
-    turnWant = -0.45;
+  if (turnWant < -PIXY_DEADBAND_TURN) {
+    turnWant = -PIXY_DEADBAND_TURN;
   }
+
+  if ((abs(turnOffset) < 100)) {
+    turnWant = 0;
+  }
+
+
+  pixyDistanceCorrection = PIXY_DISTANCE_X - pixyDistanceBetweenTargets;
+
+  driveCorrection = (1.0 * pixyDistanceCorrection / 120) * 0.75;
+
+  if (driveCorrection > PIXY_DEADBAND_DISTANCE) {
+    driveCorrection = PIXY_DEADBAND_DISTANCE;
+  }
+
+  if (driveCorrection < -PIXY_DEADBAND_DISTANCE) {
+    driveCorrection = -PIXY_DEADBAND_DISTANCE;
+  }
+
+  if ((abs(pixyDistanceCorrection) < 20)) {
+    driveCorrection = 0;
+  }
+
+
+  frc::SmartDashboard::PutNumber("turnCorrection", -turnWant);
+  frc::SmartDashboard::PutNumber("strafeCorrection", strafeCorrectionToIdealCenter);
+  frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    driveManager->control(-turnWant ,straifCorrectionToIdealCenter);
+    driveManager->control(-turnWant ,strafeCorrectionToIdealCenter, driveCorrection);
+    //driveManager->control(0, 0, driveCorrection);
   }
   else {
-    driveManager->control(0, 0);
+    driveManager->control(0, 0, 0);
   }
   
 }

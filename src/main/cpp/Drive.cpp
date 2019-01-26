@@ -135,6 +135,6 @@ void DriveManager::driveTrain() {
     frc::SmartDashboard::PutNumber("voltageBackRight", driveMotorBackRight->GetBusVoltage());
 }
 
-void DriveManager::control(double turn, double strafe) { 
-    mecanumDrive->DriveCartesian(strafe, 0, turn, 0);
+void DriveManager::control(double turn, double strafe, double drive) { 
+    mecanumDrive->DriveCartesian(strafe, drive, turn, 0);
 }
