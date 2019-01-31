@@ -83,11 +83,13 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("Pixyw2", Pixyw2);
   frc::SmartDashboard::PutNumber("Pixyh2", Pixyh2);
 
+//removal of size code for tracking
+/*
   bigSize = Pixyw1 * Pixyh1;
   smallSize = Pixyw2 * Pixyh2;
 
   frc::SmartDashboard::PutNumber("PixyArea1", bigSize);
-  frc::SmartDashboard::PutNumber("PixyArea2", smallSize);
+  frc::SmartDashboard::PutNumber("PixyArea2", smallSize); */
 
  
  
@@ -141,7 +143,7 @@ void PixyManager::pixyFunct() {
   }
 
 //turn correction 
-
+/*
   if ((Pixyx1-Pixyx2) < 0) {
     leftTargetBig = false;
   }
@@ -156,8 +158,11 @@ void PixyManager::pixyFunct() {
     turnOffset = bigSize - smallSize;
   }
 
-  turnWant = ((1.0 * turnOffset/200) * 0.635);
+  frc::SmartDashboard::PutNumber("TurnOffset", turnOffset);
 
+  turnWant = ((1.0 * turnOffset/600) * 0.635);
+
+//outside deadband (max value)
   if (turnWant > PIXY_DEADBAND_TURN) {
     turnWant = PIXY_DEADBAND_TURN;
   }
@@ -169,6 +174,7 @@ void PixyManager::pixyFunct() {
   if ((abs(turnOffset) < 100)) {
     turnWant = 0;
   }
+*/
 
 
   pixyDistanceCorrection = PIXY_DISTANCE_X - pixyDistanceBetweenTargets;
@@ -188,12 +194,12 @@ void PixyManager::pixyFunct() {
   }
 
 
-  frc::SmartDashboard::PutNumber("turnCorrection", -turnWant);
+  //frc::SmartDashboard::PutNumber("turnCorrection", -turnWant);
   frc::SmartDashboard::PutNumber("strafeCorrection", strafeCorrectionToIdealCenter);
   frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    driveManager->control(-turnWant ,strafeCorrectionToIdealCenter, driveCorrection);
+    driveManager->control(-strafeCorrectionToIdealCenter ,strafeCorrectionToIdealCenter, driveCorrection);
     //driveManager->control(0, 0, driveCorrection);
   }
   else {

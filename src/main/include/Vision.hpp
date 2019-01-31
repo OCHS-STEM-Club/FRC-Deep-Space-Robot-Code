@@ -13,7 +13,7 @@
 #define PIXY_CENTER_X 170
 #define PIXY_DEADBAND_X 35
 
-#define PIXY_DEADBAND_TURN 0.55
+//#define PIXY_DEADBAND_TURN 0.55
 #define ANTI_MISSILE_CODE 0.35
 #define PIXY_DEADBAND_DISTANCE 0.45
 
@@ -47,11 +47,11 @@ double distanceToIdealCenter;
 double strafeCorrectionToIdealCenter;
 bool goodTargets; 
 
-bool leftTargetBig;
-double bigSize;
-double smallSize;
-double turnOffset;
-double turnWant;
+//bool leftTargetBig;
+//double bigSize;
+//double smallSize;
+//double turnOffset;
+//double turnWant;
 
 double pixyDistanceBetweenTargets;
 double pixyDistanceCorrection;
