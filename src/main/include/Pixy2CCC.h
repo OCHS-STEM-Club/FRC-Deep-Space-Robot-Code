@@ -17,10 +17,11 @@
 // all communication modes (SPI, I2C and UART) can share the same code.  
 //
 
+// Inoperable, missing Arduino.h
+
 #include <stdint.h>
 #include <stdio.h>
 #include "TPixy2.h"
-#include <Arduino.h>
 
 #ifndef _PIXY2CCC_H
 #define _PIXY2CCC_H
@@ -70,7 +71,8 @@ struct Block
     }     
     else // regular block.  Note, angle is always zero, so no need to print
       sprintf(buf, "sig: %d x: %d y: %d width: %d height: %d index: %d age: %d", m_signature, m_x, m_y, m_width, m_height, m_index, m_age);   
-    Serial.println(buf); 
+    // Commented out due to lack of Arduino.h 
+    //Serial.println(buf); 
   }
   
   uint16_t m_signature;

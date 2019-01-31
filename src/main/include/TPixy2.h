@@ -55,6 +55,7 @@
 #define PIXY_RCS_MAX_POS                     1000L
 #define PIXY_RCS_CENTER_POS                  ((PIXY_RCS_MAX_POS-PIXY_RCS_MIN_POS)/2)
 
+#include <stdio.h>
 #include "Pixy2CCC.h"
 #include "Pixy2Line.h"
 #include "Pixy2Video.h"

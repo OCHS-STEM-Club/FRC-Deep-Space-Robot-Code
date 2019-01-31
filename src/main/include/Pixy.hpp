@@ -6,7 +6,7 @@
 #include <frc/I2C.h>
 #include <hal/Hal.h>
 
-#define I2CADDRESS 0x54
+#define I2C_ADDRESS 0x54
 
 typedef unsigned char byte;
 byte buff[32];
