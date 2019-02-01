@@ -10,8 +10,8 @@
 
 #define I2C_ADDRESS 0x64
 
-#define PIXY_CENTER_X 170
-#define PIXY_DEADBAND_X 35
+#define PIXY_CENTER_X 160
+#define PIXY_DEADBAND_X 5
 
 //#define PIXY_DEADBAND_TURN 0.55
 #define ANTI_MISSILE_CODE 0.35

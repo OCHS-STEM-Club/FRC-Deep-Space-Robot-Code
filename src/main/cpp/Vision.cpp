@@ -118,7 +118,7 @@ void PixyManager::pixy() {
 void PixyManager::pixyFunct() {
   distanceToIdealCenter = ((1.0 * Pixyx1 + Pixyx2) / 2) - PIXY_CENTER_X;
 
-  strafeCorrectionToIdealCenter = (distanceToIdealCenter/150) * 0.685;
+  strafeCorrectionToIdealCenter = (distanceToIdealCenter/125) * 0.85;
 
   if (strafeCorrectionToIdealCenter > ANTI_MISSILE_CODE) {
     strafeCorrectionToIdealCenter = ANTI_MISSILE_CODE;
@@ -199,8 +199,8 @@ void PixyManager::pixyFunct() {
   frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    driveManager->control(-strafeCorrectionToIdealCenter ,strafeCorrectionToIdealCenter, driveCorrection);
-    //driveManager->control(0, 0, driveCorrection);
+    driveManager->control(strafeCorrectionToIdealCenter ,strafeCorrectionToIdealCenter, driveCorrection);
+    //driveManager->control(strafeCorrectionToIdealCenter, 0, 0);
   }
   else {
     driveManager->control(0, 0, 0);

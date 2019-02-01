@@ -44,6 +44,11 @@ DriveManager::DriveManager () {
     driveLatch = new bool; 
     *driveToggle = true;
     *driveLatch = false;
+
+    idleModeToggle = new bool;
+    idleModeLatch = new bool;
+    *idleModeToggle = true;
+    *idleModeLatch = false; 
 }
 
 void DriveManager::driveTrain() {
@@ -81,7 +86,7 @@ void DriveManager::driveTrain() {
 			*zStickValue = stick->GetRawAxis(2);
 		}
 
-    frc::SmartDashboard::PutNumber("joystickY", stick->GetRawAxis(1));
+    frc::SmartDashboard::PutNumber("joystickY", stick->GetRawAxis(0));
     frc::SmartDashboard::PutNumber("joystickx", stick->GetRawAxis(1));
 
 
@@ -133,6 +138,29 @@ void DriveManager::driveTrain() {
     frc::SmartDashboard::PutNumber("voltageFrontRight", driveMotorFrontRight->GetBusVoltage());
     frc::SmartDashboard::PutNumber("voltageBackLeft", driveMotorBackLeft->GetBusVoltage());
     frc::SmartDashboard::PutNumber("voltageBackRight", driveMotorBackRight->GetBusVoltage());
+
+    if (stick->GetRawButton(11) and !*idleModeLatch) {
+        *idleModeToggle = !*idleModeToggle;
+        *idleModeLatch = true;
+    }
+    else if (!stick->GetRawButton(11) and *idleModeLatch) {
+        *idleModeLatch = false;
+    }
+
+    if (*idleModeToggle) {
+        driveMotorFrontLeft->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        driveMotorFrontRight->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        driveMotorBackLeft->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        driveMotorBackRight->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        frc::SmartDashboard::PutString("driveMotorIdleMode", "brake");
+    }
+    else if (!*idleModeToggle) {
+        driveMotorFrontLeft->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+        driveMotorFrontRight->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+        driveMotorBackLeft->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+        driveMotorBackRight->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+        frc::SmartDashboard::PutString("driveMotorIdleMode", "coast");
+    }
 }
 
 void DriveManager::control(double turn, double strafe, double drive) { 
