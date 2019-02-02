@@ -157,6 +157,27 @@ void PixyManager::pixy() {
 
   frc::SmartDashboard::PutNumber("gyro 0 - 360", angle);
   
+pixyDistanceMidToTarget = (1.0 * pixyDistanceBetweenTargets / 2);
+totalPixelsLeftOfTarget = xCenter;
+totalPixelsRightOfTarget = (320 - xCenter);
+distanceToTarget_in = ((196 / pixyDistanceBetweenTargets) * 12);
+FOV_Left_in = ((DISTANCE_MID_TO_TARGET * totalPixelsLeftOfTarget) / 2);
+FOV_Right_in = ((DISTANCE_MID_TO_TARGET * totalPixelsRightOfTarget) / 2);
+angleOppositeDistance_Left = asin((distanceToTarget_in * SIN_HALF_PIXYFOV) / FOV_Left_in);
+angleOppositeDistance_Right = asin((distanceToTarget_in * SIN_HALF_PIXYFOV) / FOV_Right_in);
+angleFromLeftSide = 180 - (37.5 + angleOppositeDistance_Left);
+angleFromRightSide = 180 - (37.5 + angleOppositeDistance_Right);
+
+frc::SmartDashboard::PutNumber("angleFromLeftSide", angleFromLeftSide);
+frc::SmartDashboard::PutNumber("angleFromRightSide", angleFromRightSide);
+frc::SmartDashboard::PutNumber("angleOppositeDistance_Left", angleOppositeDistance_Left);
+frc::SmartDashboard::PutNumber("angleOppositeDistance_Right", angleOppositeDistance_Right);
+frc::SmartDashboard::PutNumber("distanceToTarget_in", distanceToTarget_in);
+frc::SmartDashboard::PutNumber("FOV_Left_in", FOV_Left_in);
+frc::SmartDashboard::PutNumber("FOV_Right_in", FOV_Right_in);
+frc::SmartDashboard::PutNumber("totalPixelsLeftOfTarget", totalPixelsLeftOfTarget);
+frc::SmartDashboard::PutNumber("totalPixelsRightOfTarget", totalPixelsRightOfTarget);
+frc::SmartDashboard::PutNumber("pixyDistanceMidToTarget", pixyDistanceMidToTarget);
 }
 
 void PixyManager::pixyFunct() {
@@ -221,19 +242,7 @@ void PixyManager::pixyFunct() {
 */
 
 //Turn Correction v.2
-pixyDistanceMidToTarget = (1.0 * pixyDistanceBetweenTargets / 2);
-totalPixelsLeftOfTarget = xCenter;
-totalPixelsRightOfTarget = (320 - xCenter);
-distanceToTarget_in = (196 / pixyDistanceBetweenTargets);
-FOV_Left_in = ((DISTANCE_MID_TO_TARGET * totalPixelsLeftOfTarget) / 2);
-FOV_Right_in = ((DISTANCE_MID_TO_TARGET * totalPixelsRightOfTarget) / 2);
-angleOppositeDistance_Left = ((distanceToTarget_in * SIN_HALF_PIXYFOV) / FOV_Left_in);
-angleOppositeDistance_Right = ((distanceToTarget_in * SIN_HALF_PIXYFOV) / FOV_Right_in);
-angleFromLeftSide = 180 - (37.5 + angleOppositeDistance_Left);
-angleFromRightSide = 180 - (37.5 + angleOppositeDistance_Right);
 
-frc::SmartDashboard::PutNumber("angleFromLeftSide", angleFromLeftSide);
-frc::SmartDashboard::PutNumber("angleFromRightSide", angleFromRightSide);
 
 
 if (angle < 180) {
