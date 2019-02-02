@@ -10,10 +10,10 @@
 
 #define I2C_ADDRESS 0x64
 
-#define PIXY_CENTER_X 160
+#define PIXY_CENTER_X 165
 #define PIXY_DEADBAND_X 5
 
-//#define PIXY_DEADBAND_TURN 0.55
+#define PIXY_DEADBAND_TURN 2.5 //degrees 
 #define ANTI_MISSILE_CODE 0.35
 #define PIXY_DEADBAND_DISTANCE 0.45
 
@@ -28,6 +28,11 @@ DriveManager *driveManager;
 
 frc::I2C *I2CPixy;
 frc::Joystick *stick; 
+
+AHRS *ahrs; 
+
+double angle;
+int revoultions; 
 
 int translate[15];
 
@@ -48,10 +53,11 @@ double strafeCorrectionToIdealCenter;
 bool goodTargets; 
 
 //bool leftTargetBig;
-//double bigSize;
-//double smallSize;
-//double turnOffset;
-//double turnWant;
+double bigSize;
+double smallSize;
+double turnOffset;
+double turnWant;
+double turnCorrection; 
 
 double pixyDistanceBetweenTargets;
 double pixyDistanceCorrection;

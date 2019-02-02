@@ -47,7 +47,7 @@ DriveManager::DriveManager () {
 
     idleModeToggle = new bool;
     idleModeLatch = new bool;
-    *idleModeToggle = true;
+    *idleModeToggle = false;  //true for brake
     *idleModeLatch = false; 
 }
 
@@ -85,6 +85,12 @@ void DriveManager::driveTrain() {
 		{
 			*zStickValue = stick->GetRawAxis(2);
 		}
+
+        if (stick->GetRawButton(1)) {
+            *xStickValue = *xStickValue * 0.35;
+            *yStickValue = *yStickValue * 0.35;
+            *zStickValue = *zStickValue * 0.35;
+        }
 
     frc::SmartDashboard::PutNumber("joystickY", stick->GetRawAxis(0));
     frc::SmartDashboard::PutNumber("joystickx", stick->GetRawAxis(1));
@@ -161,6 +167,7 @@ void DriveManager::driveTrain() {
         driveMotorBackRight->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
         frc::SmartDashboard::PutString("driveMotorIdleMode", "coast");
     }
+    
 }
 
 void DriveManager::control(double turn, double strafe, double drive) { 

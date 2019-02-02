@@ -7,6 +7,18 @@ PixyManager::PixyManager () {
   stick = new frc::Joystick{ 0 };
 
   target = 170;    
+
+    //Gyro
+    try {
+        ahrs = new AHRS(SPI::Port::kMXP);
+    }
+    catch(std::exception ex) {
+        std::string err_string = "Error initalizing naxX-MXP"; 
+        err_string += ex.what();
+        DriverStation::ReportError(err_string.c_str());
+    }
+
+  revoultions = 0;
 }
 
 void PixyManager::pixy() {
@@ -84,12 +96,12 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("Pixyh2", Pixyh2);
 
 //removal of size code for tracking
-/*
   bigSize = Pixyw1 * Pixyh1;
   smallSize = Pixyw2 * Pixyh2;
 
   frc::SmartDashboard::PutNumber("PixyArea1", bigSize);
-  frc::SmartDashboard::PutNumber("PixyArea2", smallSize); */
+  frc::SmartDashboard::PutNumber("PixyArea2", smallSize); 
+  frc::SmartDashboard::PutNumber("areaDifference", (bigSize - smallSize));
 
  
  
@@ -113,6 +125,38 @@ void PixyManager::pixy() {
   pixyDistanceBetweenTargets = abs(Pixyx1-Pixyx2);
   frc::SmartDashboard::PutNumber("pixyDistanceBetweenTargets", pixyDistanceBetweenTargets);
 
+  angle = ahrs->GetAngle();
+  
+  if (revoultions >= 1) {
+    angle = angle - (revoultions * 360);
+  }
+  
+  if (revoultions <= 0) {
+    angle = angle + abs(revoultions * 360);
+  }
+
+  if ((angle > 360) or (angle < 0)) {
+    if (angle > 360) {
+      revoultions++;
+    }
+
+    if (angle < 360) {
+      revoultions--;
+    }
+
+    angle = ahrs->GetAngle();
+
+    if (revoultions >= 1) {
+      angle = angle - (revoultions * 360);
+    }
+  
+    if (revoultions <= 0) {
+      angle = angle + abs(revoultions * 360);
+    }
+  }
+
+  frc::SmartDashboard::PutNumber("gyro 0 - 360", angle);
+  
 }
 
 void PixyManager::pixyFunct() {
@@ -176,10 +220,26 @@ void PixyManager::pixyFunct() {
   }
 */
 
+if (angle < 180) {
+  turnWant = 90;
+}
+
+if (angle > 180) {
+  turnWant = 270; 
+}
+
+turnOffset = turnWant - angle; 
+turnCorrection = (1.0 * turnOffset/180) * 0.65;
+
+frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
+if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
+  turnCorrection = 0;
+}
+
 
   pixyDistanceCorrection = PIXY_DISTANCE_X - pixyDistanceBetweenTargets;
 
-  driveCorrection = (1.0 * pixyDistanceCorrection / 120) * 0.75;
+  driveCorrection = (1.0 * pixyDistanceCorrection / 120) * 0.95;
 
   if (driveCorrection > PIXY_DEADBAND_DISTANCE) {
     driveCorrection = PIXY_DEADBAND_DISTANCE;
@@ -194,13 +254,13 @@ void PixyManager::pixyFunct() {
   }
 
 
-  //frc::SmartDashboard::PutNumber("turnCorrection", -turnWant);
+  frc::SmartDashboard::PutNumber("turnCorrection", turnCorrection);
   frc::SmartDashboard::PutNumber("strafeCorrection", strafeCorrectionToIdealCenter);
   frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    driveManager->control(strafeCorrectionToIdealCenter ,strafeCorrectionToIdealCenter, driveCorrection);
-    //driveManager->control(strafeCorrectionToIdealCenter, 0, 0);
+    //driveManager->control(strafeCorrectionToIdealCenter ,strafeCorrectionToIdealCenter, driveCorrection);
+    driveManager->control(turnCorrection, strafeCorrectionToIdealCenter, 0);
   }
   else {
     driveManager->control(0, 0, 0);
