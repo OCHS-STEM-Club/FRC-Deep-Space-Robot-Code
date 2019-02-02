@@ -20,6 +20,10 @@
 #define PIXY_DISTANCE_X 98 //2ft
 #define PIXY_DISTANCE_DEADBAND 4
 
+#define PIXY_DPI 10
+#define SIN_HALF_PIXYFOV 0.608761429 //sin(37.5*)
+#define DISTANCE_MID_TO_TARGET 5.75 //in
+
 typedef unsigned char byte;
 
 class PixyManager {
@@ -62,6 +66,18 @@ double turnCorrection;
 double pixyDistanceBetweenTargets;
 double pixyDistanceCorrection;
 double driveCorrection;
+
+//Finding Angle
+double pixyDistanceMidToTarget;
+double totalPixelsLeftOfTarget;
+double totalPixelsRightOfTarget;
+double FOV_Right_in;
+double FOV_Left_in;
+double angleOppositeDistance_Left;
+double angleOppositeDistance_Right;
+double angleFromLeftSide;
+double angleFromRightSide;
+double distanceToTarget_in;
 
 public:
     PixyManager();
