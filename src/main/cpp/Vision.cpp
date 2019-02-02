@@ -18,7 +18,7 @@ PixyManager::PixyManager () {
         DriverStation::ReportError(err_string.c_str());
     }
 
-  revoultions = 0;
+  revolutions = 0;
 }
 
 void PixyManager::pixy() {
@@ -127,31 +127,31 @@ void PixyManager::pixy() {
 
   angle = ahrs->GetAngle();
   
-  if (revoultions >= 1) {
-    angle = angle - (revoultions * 360);
+  if (revolutions >= 1) {
+    angle = angle - (revolutions * 360);
   }
   
-  if (revoultions <= 0) {
-    angle = angle + abs(revoultions * 360);
+  if (revolutions <= 0) {
+    angle = angle + abs(revolutions * 360);
   }
 
   if ((angle > 360) or (angle < 0)) {
     if (angle > 360) {
-      revoultions++;
+      revolutions++;
     }
 
     if (angle < 360) {
-      revoultions--;
+      revolutions--;
     }
 
     angle = ahrs->GetAngle();
 
-    if (revoultions >= 1) {
-      angle = angle - (revoultions * 360);
+    if (revolutions >= 1) {
+      angle = angle - (revolutions * 360);
     }
   
-    if (revoultions <= 0) {
-      angle = angle + abs(revoultions * 360);
+    if (revolutions <= 0) {
+      angle = angle + abs(revolutions * 360);
     }
   }
 
@@ -259,11 +259,11 @@ if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
   frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    //driveManager->control(strafeCorrectionToIdealCenter ,strafeCorrectionToIdealCenter, driveCorrection);
-    driveManager->control(turnCorrection, strafeCorrectionToIdealCenter, 0);
+    driveManager->control(turnCorrection ,strafeCorrectionToIdealCenter, driveCorrection, true);
+    //driveManager->control(turnCorrection, strafeCorrectionToIdealCenter, 0, true);
   }
   else {
-    driveManager->control(0, 0, 0);
+    driveManager->control(0, 0, 0, true);
   }
   
 }

@@ -10,7 +10,7 @@
 
 #define I2C_ADDRESS 0x64
 
-#define PIXY_CENTER_X 165
+#define PIXY_CENTER_X 160
 #define PIXY_DEADBAND_X 5
 
 #define PIXY_DEADBAND_TURN 2.5 //degrees 
@@ -32,7 +32,7 @@ frc::Joystick *stick;
 AHRS *ahrs; 
 
 double angle;
-int revoultions; 
+int revolutions; 
 
 int translate[15];
 

@@ -170,6 +170,15 @@ void DriveManager::driveTrain() {
     
 }
 
-void DriveManager::control(double turn, double strafe, double drive) { 
+void DriveManager::control(double turn, double strafe, double drive, bool brake) { 
     mecanumDrive->DriveCartesian(strafe, drive, turn, 0);
+
+    if (brake) {
+        driveMotorFrontLeft->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        driveMotorFrontRight->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        driveMotorBackLeft->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        driveMotorBackRight->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        frc::SmartDashboard::PutString("driveMotorIdleMode", "brake");
+    }
+
 }

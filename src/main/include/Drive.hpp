@@ -46,5 +46,5 @@ class DriveManager {
     public:
     DriveManager();
     void driveTrain(); 
-    void control(double turn, double strafe, double drive); 
+    void control(double turn, double strafe, double drive , bool brake); 
 };
