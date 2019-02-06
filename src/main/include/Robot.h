@@ -11,6 +11,8 @@
 
 #include "Drive.hpp"
 #include "Vision.hpp"
+#include "Lift.hpp"
+#include "Manipulator.hpp"
 
 #include <frc/IterativeRobot.h>
 #include <frc/SmartDashboard/SendableChooser.h>
@@ -34,4 +36,6 @@ class Robot : public frc::IterativeRobot {
 
   DriveManager *driveManager;
   PixyManager *pixyManager;
+  LiftManager *liftManager;
+  ManipulatorManager *manipulatorManager;
 };

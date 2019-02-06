@@ -14,6 +14,7 @@
 
 #include "Drive.hpp"
 #include "Vision.hpp"
+#include "Lift.hpp"
 
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
@@ -24,7 +25,8 @@ typedef unsigned char byte;
 Robot::Robot() {
   driveManager = new DriveManager();
   pixyManager = new PixyManager();
-
+  liftManager = new LiftManager();
+  manipulatorManager = new ManipulatorManager();
 }
 
 frc::Joystick *stick;
@@ -96,6 +98,8 @@ void Robot::TeleopPeriodic() {
   else {
     driveManager->driveTrain();
   } 
+
+  liftManager->Lift();
 }
 
 void Robot::TestPeriodic() {
