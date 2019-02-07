@@ -14,11 +14,21 @@ class LiftManager {
     WPI_TalonSRX *leftClimber; 
     WPI_TalonSRX *rightClimber; 
     WPI_TalonSRX *backClimber; 
-    //WPI_TalonSRX *leftHorz;
-    //WPI_TalonSRX *rightHorz;
     
     double *verticalClimberSpeed;
     //double *horz;
+
+    double *leftDistance;
+    double *rightDistance;
+    double *backDistance;
+
+    double *leftBoost;
+    double *rightBoost;
+    double *backBoost;
+
+    double *leftPower;
+    double *rightPower;
+    double *backPower;
 
     public:
     LiftManager();
