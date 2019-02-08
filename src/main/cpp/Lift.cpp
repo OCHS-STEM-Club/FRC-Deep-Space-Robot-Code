@@ -33,10 +33,11 @@ backClimber->GetSensorCollection().SetQuadraturePosition(0,10);
 }
 
 void LiftManager::Lift() {
-    *verticalClimberSpeed = xbox->GetRawAxis(1) * 0.25; //no more than 25%
+    *verticalClimberSpeed = xbox->GetRawAxis(1) * 0.35; //no more than 25%
     //*horz = xbox->GetRawAxis(5) * 0.2; 
+    frc::SmartDashboard::PutNumber("liftPower", *verticalClimberSpeed);
 
-    *leftDistance = (1.0 * leftClimber->GetSensorCollection().GetQuadraturePosition() / 4096);
+    *leftDistance = (1.0 * -leftClimber->GetSensorCollection().GetQuadraturePosition() / 4096);
     *rightDistance = (1.0 * rightClimber->GetSensorCollection().GetQuadraturePosition() / 4096);
     *backDistance = (1.0 * backClimber->GetSensorCollection().GetQuadraturePosition() / 4096);
 
@@ -44,30 +45,60 @@ void LiftManager::Lift() {
     frc::SmartDashboard::PutNumber("rightClimberEncoder", *rightDistance);
     frc::SmartDashboard::PutNumber("backClimberEncoder", *backDistance);
 
-    if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
-        *rightBoost = (*leftDistance - *rightDistance) / 4;
-        *backBoost = (*leftDistance - *backDistance) / 4;
-        *leftBoost = 0;
-    }
-    else if (*rightDistance > *leftDistance and *rightDistance > *backDistance) {
-        *leftBoost = (*rightDistance - *leftDistance) / 4;
-        *backBoost = (*rightDistance - *backDistance) / 4;
-        *rightBoost = 0;
-    }
-    else if (*backDistance > *leftDistance and *backDistance > *leftDistance) {
-        *leftBoost = (*backDistance - *leftDistance) / 4;
-        *rightBoost = (*backDistance - *rightDistance) / 4;
-        backBoost = 0;
+    if (*verticalClimberSpeed > 0) {
+        if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
+            *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *backBoost = (*leftDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *leftBoost = 0;
+        }
+        else if (*rightDistance > *leftDistance and *rightDistance > *backDistance) {
+            *leftBoost = (*rightDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *rightBoost = 0;
+        }
+        else if (*backDistance > *leftDistance and *backDistance > *leftDistance) {
+            *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *backBoost = 0;
+        }
+
+        *leftPower = *leftBoost + *verticalClimberSpeed;
+        *rightPower = *rightBoost + *verticalClimberSpeed;
+        *backPower = *backBoost + *verticalClimberSpeed;
     }
 
-    *leftPower = *leftBoost + *verticalClimberSpeed;
-    *rightPower = *rightBoost + *verticalClimberSpeed;
-    *backPower = *backBoost + *verticalClimberSpeed;
- 
+    if (*verticalClimberSpeed < 0) {
+        if (*leftDistance < *rightDistance and *leftDistance < *backDistance) {
+            *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *backBoost = (*leftDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *leftBoost = 0;
+        }
+        else if (*rightDistance < *leftDistance and *rightDistance < *backDistance) {
+            *leftBoost = (*rightDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *rightBoost = 0;
+        }
+        else if (*backDistance < *leftDistance and *backDistance < *leftDistance) {
+            *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+            *backBoost = 0;
+        }
+
+        *leftPower = *leftBoost + *verticalClimberSpeed;
+        *rightPower = *rightBoost + *verticalClimberSpeed;
+        *backPower = *backBoost + *verticalClimberSpeed;
+    }
+
+    
     leftClimber->Set(-*leftPower); 
     rightClimber->Set(*rightPower);
-    backClimber->Set(*backPower);
+    backClimber->Set(*backPower); 
  
+  /*  leftClimber->Set(-*verticalClimberSpeed);
+    rightClimber->Set(*verticalClimberSpeed);
+    backClimber->Set(*verticalClimberSpeed); */
+
+    frc::SmartDashboard::PutNumber("leftEnc", leftClimber->GetSensorCollection().GetQuadraturePosition());
 
 //leftClimber->GetSensorCollection().IsFwdLimitSwitchClosed();
 }

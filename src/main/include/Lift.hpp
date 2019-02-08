@@ -6,6 +6,8 @@
 #include <ctre/Phoenix.h>
 #include <frc/XboxController.h>
 
+#define CLIMBER_SEPERATION_ROTATIONS 1.5
+
 class LiftManager {
     private:
     frc::Joystick *stick; 

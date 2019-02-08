@@ -113,7 +113,7 @@ void DriveManager::driveTrain() {
 
     frc::SmartDashboard::PutNumber("driveGyro", *driveGyro);
 
-    mecanumDrive->DriveCartesian(-*yStickValue, *xStickValue, *zStickValue, *driveGyro);
+    mecanumDrive->DriveCartesian(*yStickValue, *xStickValue, *zStickValue, *driveGyro);
 
     *gyro = ahrs->GetAngle(); 
     frc::SmartDashboard::PutNumber("gyro", *gyro);
