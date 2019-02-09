@@ -7,15 +7,11 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
-
 #include <iostream>
-
 #include <frc/SmartDashboard/SmartDashboard.h>
-
 #include "Drive.hpp"
 #include "Vision.hpp"
 #include "Lift.hpp"
-
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
 #include <frc/I2C.h>
@@ -98,7 +94,6 @@ void Robot::TeleopPeriodic() {
   else {
     driveManager->driveTrain();
   } 
-
   liftManager->Lift();
 }
 

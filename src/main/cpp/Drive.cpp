@@ -56,6 +56,7 @@ void DriveManager::driveTrain() {
     //*yStickValue = -stick->GetRawAxis(1);
     //*zStickValue = stick->GetRawAxis(2);
 
+
     if (abs(stick->GetRawAxis(1)) < .2)
 		{
 			*xStickValue = 0;

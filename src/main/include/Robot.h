@@ -8,12 +8,10 @@
 #pragma once
 
 #include <string>
-
 #include "Drive.hpp"
 #include "Vision.hpp"
 #include "Lift.hpp"
 #include "Manipulator.hpp"
-
 #include <frc/IterativeRobot.h>
 #include <frc/SmartDashboard/SendableChooser.h>
 
@@ -33,7 +31,6 @@ class Robot : public frc::IterativeRobot {
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
-
   DriveManager *driveManager;
   PixyManager *pixyManager;
   LiftManager *liftManager;
