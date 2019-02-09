@@ -8,7 +8,11 @@ leftClimber = new WPI_TalonSRX(11);
 rightClimber = new WPI_TalonSRX(9);
 backClimber = new WPI_TalonSRX(10);
 
+leftClimber->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, K_PID_LOOP_IDX, K_TIMEOUT_MS);
+
 verticalClimberSpeed = new double;
+rightStick = new double;
+leftStick = new double;
 
 leftDistance = new double;
 rightDistance = new double;
@@ -33,7 +37,16 @@ backClimber->GetSensorCollection().SetQuadraturePosition(0,10);
 }
 
 void LiftManager::Lift() {
-    *verticalClimberSpeed = xbox->GetRawAxis(1) * 0.35; //no more than 25%
+    *rightStick = xbox->GetRawAxis(3) * 0.35; //no more than 25%
+    *leftStick = xbox->GetRawAxis(2) * 0.35; //no more than 25%
+
+    if (*rightStick > *leftStick) {
+        *verticalClimberSpeed = *rightStick;
+    }
+    else if (*leftStick > *rightStick) {
+        *verticalClimberSpeed = *leftStick;
+    }
+
     //*horz = xbox->GetRawAxis(5) * 0.2; 
     frc::SmartDashboard::PutNumber("liftPower", *verticalClimberSpeed);
 

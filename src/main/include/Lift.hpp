@@ -8,6 +8,9 @@
 
 #define CLIMBER_SEPERATION_ROTATIONS 1.5
 
+#define K_TIMEOUT_MS 10
+#define K_PID_LOOP_IDX 0
+
 class LiftManager {
     private:
     frc::Joystick *stick; 
@@ -18,6 +21,8 @@ class LiftManager {
     WPI_TalonSRX *backClimber; 
     
     double *verticalClimberSpeed;
+    double *rightStick;
+    double *leftStick;
     //double *horz;
 
     double *leftDistance;
