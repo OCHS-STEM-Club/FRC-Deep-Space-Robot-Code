@@ -8,7 +8,15 @@ leftClimber = new WPI_TalonSRX(11);
 rightClimber = new WPI_TalonSRX(9);
 backClimber = new WPI_TalonSRX(10);
 
+/*
 leftClimber->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, K_PID_LOOP_IDX, K_TIMEOUT_MS);
+leftClimber->SetSensorPhase(true);
+leftClimber->ConfigAllowableClosedloopError(K_PID_LOOP_IDX, 0, K_TIMEOUT_MS);
+
+leftClimber->Config_kP(K_PID_LOOP_IDX, 0.0, K_TIMEOUT_MS); 
+leftClimber->Config_kI(K_PID_LOOP_IDX, 0.0, K_TIMEOUT_MS);
+leftClimber->Config_kD(K_PID_LOOP_IDX, 0.0, K_TIMEOUT_MS);
+leftClimber->Config_kF(K_PID_LOOP_IDX, 0.0, K_TIMEOUT_MS); */
 
 verticalClimberSpeed = new double;
 rightStick = new double;

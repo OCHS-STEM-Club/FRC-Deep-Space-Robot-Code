@@ -18,7 +18,7 @@ ManipulatorManager::ManipulatorManager() {
 
 void ManipulatorManager::manipulate() {
     *armSpeed = xbox->GetRawAxis(5) * 0.3;
-    *extendSpeed = xbox->GetRawAxis(1) * 0.4;
+    *extendSpeed = xbox->GetRawAxis(1) * 0.6;
 
     armMotor->Set(*armSpeed);
     extendMotor->Set(*extendSpeed);
