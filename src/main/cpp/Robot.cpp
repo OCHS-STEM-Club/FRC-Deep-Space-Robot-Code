@@ -7,27 +7,36 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
-
 #include <iostream>
-
 #include <frc/SmartDashboard/SmartDashboard.h>
-
 #include "Drive.hpp"
-#include "Pixy.hpp"
-
+#include "Vision.hpp"
+#include "Lift.hpp"
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
+#include <frc/I2C.h>
+
+typedef unsigned char byte;
 
 Robot::Robot() {
   driveManager = new DriveManager();
   pixyManager = new PixyManager();
+  liftManager = new LiftManager();
+  manipulatorManager = new ManipulatorManager();
 }
+
+frc::Joystick *stick;
 
 void Robot::RobotInit() {
   m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  stick = new frc::Joystick{ 0 };
+
 }
+
+
 
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -50,7 +59,6 @@ void Robot::RobotPeriodic() {}
  * if-else structure below with additional strings. If using the SendableChooser
  * make sure to add them to the chooser code above as well.
  */
-frc::Joystick stick { 0 };
 
 void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
@@ -73,14 +81,25 @@ void Robot::AutonomousPeriodic() {
   }
 }
 
-void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {
-	
-  driveManager->driveTrain();
-  pixyManager->pixy();
+void Robot::TeleopInit() {
 }
 
-void Robot::TestPeriodic() {}
+void Robot::TeleopPeriodic() {
+  //driveManager->driveTrain();
+  pixyManager->pixy();
+
+  if (stick->GetRawButton(12)) {
+    pixyManager->pixyFunct();
+  }
+  else {
+    driveManager->driveTrain();
+  } 
+  liftManager->Lift();
+}
+
+void Robot::TestPeriodic() {
+  
+}
 
 #ifndef RUNNING_FRC_TESTS
 START_ROBOT_CLASS(Robot)
