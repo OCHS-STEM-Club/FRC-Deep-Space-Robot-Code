@@ -15,6 +15,9 @@
 #include <frc/IterativeRobot.h>
 #include <frc/SmartDashboard/SendableChooser.h>
 
+  extern int step;
+
+
 class Robot : public frc::IterativeRobot {
  public:
   void RobotInit() override;

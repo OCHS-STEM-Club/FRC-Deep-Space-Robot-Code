@@ -12,6 +12,9 @@ class ManipulatorManager {
     frc::Joystick *stick; 
     frc::XboxController *xbox;
 
+    frc::AnalogPotentiometer *potentiometer;
+    frc::DigitalInput *hallEffect;
+
     WPI_TalonSRX *armMotor; 
     WPI_TalonSRX *extendMotor;
 
@@ -20,6 +23,10 @@ class ManipulatorManager {
 
     double *armSpeed;
     double *extendSpeed;
+
+    double *startingAngle;
+    double *potDegrees;
+    double *caculatedAngle;
 
     public:
     ManipulatorManager();

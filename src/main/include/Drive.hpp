@@ -20,6 +20,7 @@ class DriveManager {
     rev::CANSparkMax *driveMotorBackLeft;
     rev::CANSparkMax *driveMotorBackRight; 
 
+
     //encoders for CANSparkMax
     rev::CANEncoder *encFrontLeft;
     rev::CANEncoder *encFrontRight;
@@ -47,4 +48,6 @@ class DriveManager {
     DriveManager();
     void driveTrain(); 
     void control(double turn, double strafe, double drive , bool brake); 
+    void turn(int angle);
+    void resetGyro();
 };

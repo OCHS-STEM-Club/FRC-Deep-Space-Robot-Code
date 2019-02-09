@@ -12,11 +12,15 @@
 #include "Drive.hpp"
 #include "Vision.hpp"
 #include "Lift.hpp"
+#include "Manipulator.hpp"
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
 #include <frc/I2C.h>
 
 typedef unsigned char byte;
+
+int step = 0;
+int autoNum = 0;
 
 Robot::Robot() {
   driveManager = new DriveManager();
@@ -71,6 +75,8 @@ void Robot::AutonomousInit() {
   } else {
     // Default Auto goes here
   }
+
+driveManager->resetGyro();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -79,6 +85,14 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+
+ /*if (autoNum = 0) {
+    switch(step) {
+      case 0: driveManager->turn(90);
+        break;
+    } 
+ } */
+ driveManager->turn(90);
 }
 
 void Robot::TeleopInit() {
@@ -94,7 +108,10 @@ void Robot::TeleopPeriodic() {
   else {
     driveManager->driveTrain();
   } 
+
   liftManager->Lift();
+
+  manipulatorManager->manipulate();
 }
 
 void Robot::TestPeriodic() {

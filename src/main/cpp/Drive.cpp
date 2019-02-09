@@ -1,5 +1,7 @@
 #include "Drive.hpp"
 
+#include <Robot.h>
+
 DriveManager::DriveManager () {
     stick = new frc::Joystick{ 0 };
 
@@ -12,6 +14,7 @@ DriveManager::DriveManager () {
     driveMotorFrontRight = new rev::CANSparkMax(2, rev::CANSparkMax::MotorType::kBrushless);
     driveMotorBackLeft = new rev::CANSparkMax(3, rev::CANSparkMax::MotorType::kBrushless);
     driveMotorBackRight = new rev::CANSparkMax(4, rev::CANSparkMax::MotorType::kBrushless);
+
 
     //encoders for CANSparkMax
     encFrontLeft = new rev::CANEncoder(*driveMotorFrontLeft);
@@ -49,21 +52,21 @@ DriveManager::DriveManager () {
     idleModeLatch = new bool;
     *idleModeToggle = false;  //true for brake
     *idleModeLatch = false; 
+
+    
 }
 
 void DriveManager::driveTrain() {
+
     //*xStickValue = -stick->GetRawAxis(0);
     //*yStickValue = -stick->GetRawAxis(1);
     //*zStickValue = stick->GetRawAxis(2);
 
 
-    if (abs(stick->GetRawAxis(1)) < .2)
-		{
+        if (abs(stick->GetRawAxis(1)) < .2) {
 			*xStickValue = 0;
 		}
-		//Otherwise set to joystick value
-		else
-		{
+		else {
 			*xStickValue = -stick->GetRawAxis(1);
 		}
 
@@ -97,11 +100,11 @@ void DriveManager::driveTrain() {
     frc::SmartDashboard::PutNumber("joystickx", stick->GetRawAxis(1));
 
 
-    if (stick->GetRawButton(3) and !*driveLatch) {
+    if (stick->GetRawButton(6) and !*driveLatch) {
         *driveToggle = !*driveToggle;
         *driveLatch = true;
     }
-    else if (!stick->GetRawButton(3) and *driveLatch) {
+    else if (!stick->GetRawButton(6) and *driveLatch) {
         *driveLatch = false;
     }
 
@@ -182,4 +185,25 @@ void DriveManager::control(double turn, double strafe, double drive, bool brake)
         frc::SmartDashboard::PutString("driveMotorIdleMode", "brake");
     }
 
+}
+
+void DriveManager::turn(int angle) {
+    double power; 
+    double turnP = 0.0035;
+   // int want = angle;
+
+    *gyro = ahrs->GetAngle();
+    frc::SmartDashboard::PutNumber("gyro", *gyro);
+
+    power = (-(*gyro - angle) * turnP);
+
+    if (fabs(*gyro - angle) < 5) {
+        power = 0;
+    }
+frc::SmartDashboard::PutNumber("auto power", power);
+    mecanumDrive->DriveCartesian(0, 0, power, 0);
+}
+
+void DriveManager::resetGyro() {
+    ahrs->Reset();
 }
