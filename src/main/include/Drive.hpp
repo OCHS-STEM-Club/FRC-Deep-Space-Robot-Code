@@ -40,7 +40,11 @@ class DriveManager {
     bool *driveToggle; 
     bool *driveLatch; 
 
+    bool *idleModeToggle;
+    bool *idleModeLatch;
+
     public:
     DriveManager();
     void driveTrain(); 
+    void control(double turn, double strafe, double drive , bool brake); 
 };
