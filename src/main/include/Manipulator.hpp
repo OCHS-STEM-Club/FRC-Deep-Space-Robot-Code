@@ -6,6 +6,8 @@
 #include <ctre/Phoenix.h>
 #include <frc/XboxController.h>
 
+#define STARTING_ARM_ANGLE 0
+
 
 class ManipulatorManager {
     private:

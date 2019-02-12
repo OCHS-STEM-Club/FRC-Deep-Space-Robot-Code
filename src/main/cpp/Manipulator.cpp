@@ -35,7 +35,7 @@ void ManipulatorManager::manipulate() {
     frc::SmartDashboard::PutBoolean("hall effect", -hallEffect->Get());
 
     *potDegrees = potentiometer->Get();
-    *caculatedAngle = *potDegrees - *startingAngle;
+    *caculatedAngle = *potDegrees - *startingAngle + STARTING_ARM_ANGLE;
 
     frc::SmartDashboard::PutNumber("potentiometer angle", *potDegrees);
     frc::SmartDashboard::PutNumber("caculated angle", *caculatedAngle);
