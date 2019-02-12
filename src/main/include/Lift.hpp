@@ -3,7 +3,7 @@
 #include <iostream>
 #include <frc/WPILib.h>
 #include <frc/Joystick.h>
-#include <ctre/Phoenix.h>
+#include <ctre/Phoenix.h> 
 #include <frc/XboxController.h>
 
 #define CLIMBER_SEPERATION_ROTATIONS 1.5
@@ -36,6 +36,11 @@ class LiftManager {
     double *leftPower;
     double *rightPower;
     double *backPower;
+
+    bool *liftLatch;
+    int *liftToggle;
+    bool *backToggle;
+    double *backSetpoint;
 
     public:
     LiftManager();

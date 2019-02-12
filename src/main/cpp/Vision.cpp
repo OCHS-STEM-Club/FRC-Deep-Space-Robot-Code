@@ -104,7 +104,7 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("areaDifference", (bigSize - smallSize));
 
  
- 
+ /*
   frc::SmartDashboard::PutNumber("pixy0", translate[0]);
   frc::SmartDashboard::PutNumber("pixy1", translate[1]);
   frc::SmartDashboard::PutNumber("pixy2", translate[2]);
@@ -120,7 +120,7 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("pixy12", translate[12]);
   frc::SmartDashboard::PutNumber("pixy13", translate[13]);
   frc::SmartDashboard::PutNumber("pixy14", translate[14]);
-  frc::SmartDashboard::PutNumber("pixy15", translate[15]); 
+  frc::SmartDashboard::PutNumber("pixy15", translate[15]);  */
 
   pixyDistanceBetweenTargets = abs(Pixyx1-Pixyx2);
   frc::SmartDashboard::PutNumber("pixyDistanceBetweenTargets", pixyDistanceBetweenTargets);

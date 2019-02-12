@@ -24,6 +24,8 @@ DriveManager::DriveManager () {
 
     mecanumDrive = new frc::MecanumDrive(*driveMotorFrontLeft, *driveMotorBackLeft, *driveMotorFrontRight, *driveMotorBackRight);
 
+    //frontLeftPID = new frc::PIDController(0.0, 0.0, 0.0, &encFrontLeft, &driveMotorFrontLeft);
+
     //Gyro
     try {
         ahrs = new AHRS(SPI::Port::kMXP);
@@ -35,6 +37,8 @@ DriveManager::DriveManager () {
     }
     ahrs->Reset(); 
 
+    time = new frc::Timer;
+
     //Joystick values
     xStickValue = new double; 
     yStickValue = new double; 
@@ -42,6 +46,19 @@ DriveManager::DriveManager () {
     
     driveGyro = new double;
     gyro = new double; 
+    error = new double;
+
+    p = new double;
+    i = new double; 
+    integral = new double;
+    d = new double; 
+    prevError = new double;
+
+    *p = 0.0095;
+    *i = 0;
+    *d = 0;
+    *integral = 0;
+    *prevError = 0;
 
     driveToggle = new bool;  
     driveLatch = new bool; 
@@ -189,21 +206,31 @@ void DriveManager::control(double turn, double strafe, double drive, bool brake)
 
 void DriveManager::turn(int angle) {
     double power; 
-    double turnP = 0.0035;
+    double turnP = 0.0095;
    // int want = angle;
 
     *gyro = ahrs->GetAngle();
     frc::SmartDashboard::PutNumber("gyro", *gyro);
 
-    power = (-(*gyro - angle) * turnP);
+  //  power = (-(*gyro - angle) * turnP);
 
-    if (fabs(*gyro - angle) < 5) {
-        power = 0;
-    }
-frc::SmartDashboard::PutNumber("auto power", power);
+ //   if (fabs(*gyro - angle) < 1) {
+ //       power = 0;
+ //   }
+
+    *error = -(*gyro - angle);
+    *integral += *error;
+    power = (*p * *error) + (*i * *integral) + (*d * *prevError);
+    *prevError = *error;
+
+    frc::SmartDashboard::PutNumber("auto power", power);
     mecanumDrive->DriveCartesian(0, 0, power, 0);
 }
 
-void DriveManager::resetGyro() {
+void DriveManager::reset() {
     ahrs->Reset();
+    //*time->Reset();
+
+    *integral = 0;
+    *prevError = 0;
 }

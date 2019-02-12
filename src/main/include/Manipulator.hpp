@@ -17,6 +17,7 @@ class ManipulatorManager {
 
     WPI_TalonSRX *armMotor; 
     WPI_TalonSRX *extendMotor;
+    WPI_TalonSRX *handMotor;
 
     //double *pidControl;
     //frc::PIDController *pid;

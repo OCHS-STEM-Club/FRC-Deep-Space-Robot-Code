@@ -76,7 +76,7 @@ void Robot::AutonomousInit() {
     // Default Auto goes here
   }
 
-driveManager->resetGyro();
+driveManager->reset();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -92,7 +92,7 @@ void Robot::AutonomousPeriodic() {
         break;
     } 
  } */
- driveManager->turn(90);
+ driveManager->turn(180);
 }
 
 void Robot::TeleopInit() {
