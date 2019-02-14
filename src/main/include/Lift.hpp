@@ -23,7 +23,6 @@ class LiftManager {
     double *verticalClimberSpeed;
     double *rightStick;
     double *leftStick;
-    //double *horz;
 
     double *leftDistance;
     double *rightDistance;
@@ -38,9 +37,13 @@ class LiftManager {
     double *backPower;
 
     bool *liftLatch;
+    bool *liftLatchTwo;
     int *liftToggle;
     bool *backToggle;
     double *backSetpoint;
+    bool *frontToggle;
+    double *leftSetpoint;
+    double *rightSetpoint;
 
     public:
     LiftManager();

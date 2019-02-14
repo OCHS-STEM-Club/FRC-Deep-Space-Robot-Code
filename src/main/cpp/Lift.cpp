@@ -35,12 +35,19 @@ rightPower = new double;
 backPower = new double;
 
 liftLatch = new bool;
+liftLatchTwo = new bool;
 liftToggle = new int;
 backToggle = new bool;
 backSetpoint = new double;
 *liftLatch = false;
+*liftLatchTwo = false;
 *liftToggle = 0;
 *backToggle = false;
+
+frontToggle = new bool;
+leftSetpoint = new double;
+rightSetpoint = new double;
+*frontToggle = false;
 
 leftClimber->SetNeutralMode(Brake);
 rightClimber->SetNeutralMode(Brake);
@@ -52,17 +59,18 @@ backClimber->GetSensorCollection().SetQuadraturePosition(0,10);
 }
 
 void LiftManager::Lift() {
-    *rightStick = xbox->GetRawAxis(3) * 0.35; //no more than 25%
-    *leftStick = xbox->GetRawAxis(2) * 0.35; //no more than 25%
+    *rightStick = xbox->GetRawAxis(3) * 0.45; //no more than 25%
+    *leftStick = xbox->GetRawAxis(2) * 0.45; //no more than 25%
 
-    if (*rightStick > *leftStick) {
-        *verticalClimberSpeed = *rightStick;
-    }
-    else if (*leftStick > *rightStick) {
-        *verticalClimberSpeed = -*leftStick;
-    }
+    //if ((*rightStick > 0.05) && (*leftStick > 0.05)) {
+        if (*rightStick > *leftStick) {
+            *verticalClimberSpeed = *rightStick;
+        }
+        else if (*leftStick > *rightStick) {
+            *verticalClimberSpeed = -*leftStick;
+        }
+    //}
 
-    //*horz = xbox->GetRawAxis(5) * 0.2; 
     frc::SmartDashboard::PutNumber("liftPower", *verticalClimberSpeed);
 
     *leftDistance = (1.0 * -leftClimber->GetSensorCollection().GetQuadraturePosition() / 4096);
@@ -72,6 +80,31 @@ void LiftManager::Lift() {
     frc::SmartDashboard::PutNumber("leftClimberEncoder", *leftDistance);
     frc::SmartDashboard::PutNumber("rightClimberEncoder", *rightDistance);
     frc::SmartDashboard::PutNumber("backClimberEncoder", *backDistance);
+
+
+    if (xbox->GetRawButton(6) and !*liftLatch) {
+        *liftToggle = *liftToggle + 1;
+        *liftLatch = true;
+    }
+    else if (!xbox->GetRawButton(6) and *liftLatch) {
+        *liftLatch = false;
+    }
+
+    if (xbox->GetRawButton(5) and !*liftLatchTwo) {
+        *liftToggle = *liftToggle - 1;
+        *liftLatch = true;
+    }
+    else if (!xbox->GetRawButton(5) and *liftLatchTwo) {
+        *liftLatch = false;
+    }
+
+    if (*liftToggle == 4) {
+        *liftToggle = 0;
+    }
+    if (*liftToggle == -1) {
+        *liftToggle = 3;
+    }
+
 
     if (*liftToggle == 0) {
         if (*verticalClimberSpeed > 0) {
@@ -119,19 +152,23 @@ void LiftManager::Lift() {
         }
     }
 
-    if (xbox->GetRawButton(6) and !*liftLatch) {
-        *liftToggle = *liftToggle + 1;
-        *liftLatch = true;
-    }
-    else if (!xbox->GetRawButton(6) and *liftLatch) {
-        *liftLatch = false;
-    }
-
-    if (*liftToggle == 3) {
-        *liftToggle = 0;
-    }
-
     if (*liftToggle == 1) {
+        if (!*frontToggle) {
+            *leftSetpoint = *leftDistance;
+            *rightSetpoint = *rightDistance;
+            *frontToggle = true;
+        }
+
+        *leftPower = (*leftSetpoint - *leftDistance) * 0.55;
+        *rightPower = (*rightSetpoint - *rightDistance) * 0.55;
+
+        *backPower = *verticalClimberSpeed * 1.5;
+    }
+    else if (!(*liftToggle ==1)) {
+        *frontToggle = false;
+    }
+
+    if (*liftToggle == 2) {
         if (*verticalClimberSpeed > 0) {
             if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
                 *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
@@ -164,8 +201,8 @@ void LiftManager::Lift() {
             *rightBoost = 0;
         }
 
-        *leftPower = *leftBoost + *verticalClimberSpeed;
-        *rightPower = *rightBoost + *verticalClimberSpeed;
+        *leftPower = (*leftBoost + *verticalClimberSpeed) * 0.5;
+        *rightPower = (*rightBoost + *verticalClimberSpeed) * 0.5;
         }
 
         if (*verticalClimberSpeed > -0.05) {
@@ -178,18 +215,21 @@ void LiftManager::Lift() {
             *backToggle = true;
         }
 
-        *backPower = (*backSetpoint - *backDistance) * 0.25;
+        *backPower = (*backSetpoint - *backDistance) * 0.45;
     }
-    if (!(*liftToggle == 1)) {
+    if (!(*liftToggle == 2)) {
         *backToggle = false;
     }
 
-    if (*liftToggle == 2) {
-        *backPower = *verticalClimberSpeed;
+    if (*liftToggle == 3) {
+        *backPower = *verticalClimberSpeed * 1.6;
+        *leftPower = 0;
+        *rightPower = 0;
     }
 
     frc::SmartDashboard::PutNumber("lift phase", *liftToggle);
-    
+
+
     leftClimber->Set(-*leftPower); 
     rightClimber->Set(*rightPower);
     backClimber->Set(*backPower); 

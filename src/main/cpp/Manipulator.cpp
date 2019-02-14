@@ -23,6 +23,9 @@ ManipulatorManager::ManipulatorManager() {
     *startingAngle = potentiometer->Get();
 
     armMotor->SetNeutralMode(Brake);
+
+    extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+    armMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 }
 
 void ManipulatorManager::manipulate() {
@@ -49,4 +52,7 @@ void ManipulatorManager::manipulate() {
     else {
         handMotor->Set(0);
     }
+
+    frc::SmartDashboard::PutNumber("extend position", extendMotor->GetSensorCollection().GetQuadraturePosition());
+    frc::SmartDashboard::PutNumber("arm position", armMotor->GetSensorCollection().GetQuadraturePosition());
 }
