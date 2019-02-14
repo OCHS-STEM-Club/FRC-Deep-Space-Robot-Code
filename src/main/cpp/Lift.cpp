@@ -62,14 +62,13 @@ void LiftManager::Lift() {
     *rightStick = xbox->GetRawAxis(3) * 0.45; //no more than 25%
     *leftStick = xbox->GetRawAxis(2) * 0.45; //no more than 25%
 
-    //if ((*rightStick > 0.05) && (*leftStick > 0.05)) {
-        if (*rightStick > *leftStick) {
-            *verticalClimberSpeed = *rightStick;
-        }
-        else if (*leftStick > *rightStick) {
-            *verticalClimberSpeed = -*leftStick;
-        }
-    //}
+    if (*rightStick > *leftStick) {
+        *verticalClimberSpeed = *rightStick;
+    }
+    else if (*leftStick > *rightStick) {
+        *verticalClimberSpeed = -*leftStick;
+    } 
+
 
     frc::SmartDashboard::PutNumber("liftPower", *verticalClimberSpeed);
 
@@ -107,6 +106,7 @@ void LiftManager::Lift() {
 
 
     if (*liftToggle == 0) {
+        frc::SmartDashboard::PutString("lift phase", "control of all");
         if (*verticalClimberSpeed > 0) {
             if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
                 *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
@@ -153,6 +153,7 @@ void LiftManager::Lift() {
     }
 
     if (*liftToggle == 1) {
+        frc::SmartDashboard::PutString("lift phase", "back move");
         if (!*frontToggle) {
             *leftSetpoint = *leftDistance;
             *rightSetpoint = *rightDistance;
@@ -169,6 +170,7 @@ void LiftManager::Lift() {
     }
 
     if (*liftToggle == 2) {
+        frc::SmartDashboard::PutString("lift phase", "middle control");
         if (*verticalClimberSpeed > 0) {
             if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
                 *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
@@ -191,18 +193,18 @@ void LiftManager::Lift() {
             *backPower = *backBoost + *verticalClimberSpeed;
         }
 
-    if (*verticalClimberSpeed < 0) {
-        if (*leftDistance < *rightDistance) {
-            *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
-            *leftBoost = 0;
-        }
-        else if (*rightDistance < *leftDistance) {
-            *leftBoost = (*rightDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
-            *rightBoost = 0;
-        }
+        if (*verticalClimberSpeed < 0) {
+            if (*leftDistance < *rightDistance) {
+                *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *leftBoost = 0;
+            }
+            else if (*rightDistance < *leftDistance) {
+                *leftBoost = (*rightDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *rightBoost = 0;
+            }
 
-        *leftPower = (*leftBoost + *verticalClimberSpeed) * 0.5;
-        *rightPower = (*rightBoost + *verticalClimberSpeed) * 0.5;
+            *leftPower = (*leftBoost + *verticalClimberSpeed) * 0.5;
+            *rightPower = (*rightBoost + *verticalClimberSpeed) * 0.5;
         }
 
         if (*verticalClimberSpeed > -0.05) {
@@ -222,12 +224,13 @@ void LiftManager::Lift() {
     }
 
     if (*liftToggle == 3) {
+        frc::SmartDashboard::PutString("lift phase", "back control");
         *backPower = *verticalClimberSpeed * 1.6;
         *leftPower = 0;
         *rightPower = 0;
     }
 
-    frc::SmartDashboard::PutNumber("lift phase", *liftToggle);
+    frc::SmartDashboard::PutNumber("lift number", *liftToggle);
 
 
     leftClimber->Set(-*leftPower); 
