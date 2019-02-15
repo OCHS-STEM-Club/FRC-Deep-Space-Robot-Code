@@ -6,7 +6,7 @@
 #include <ctre/Phoenix.h>
 #include <frc/XboxController.h>
 
-#define STARTING_ARM_ANGLE 0
+#define STARTING_ARM_ANGLE 65
 
 
 class ManipulatorManager {
@@ -30,6 +30,10 @@ class ManipulatorManager {
     double *startingAngle;
     double *potDegrees;
     double *caculatedAngle;
+
+    bool *armLatch;
+    int *armToggle;
+
 
     public:
     ManipulatorManager();
