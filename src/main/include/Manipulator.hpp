@@ -1,20 +1,22 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <frc/WPILib.h>
 #include <frc/Joystick.h>
 #include <ctre/Phoenix.h>
 #include <frc/XboxController.h>
 
 //Defines the numerous constants used for the perimeterCheck() method in Manipulator src
-#define STARTING_ARM_ANGLE 65
-#define ENCODER_UNIT_TO_DEGREE_RATIO 25.7077
-#define ENCODER_UNIT_ARM_ANGLE_Y_INTERCEPT 2357
-#define ENCODER_UNIT_TO_INCH_RATIO 548.1416
-#define ENCODER_UNIT_ARM_LENGTH_Y_INTERCEPT 69
+#define STARTING_ARM_ANGLE 58
+#define ENCODER_UNIT_TO_DEGREE_SLOPE -0.02154
+#define ENCODER_UNIT_ARM_ANGLE_Y_INTERCEPT 58
+#define ENCODER_UNIT_TO_INCH_SLOPE 0.001824
+#define ENCODER_UNIT_ARM_LENGTH_Y_INTERCEPT -0.1259
 #define ABSOLUTE_VERTICAL_ARM_ANGLE 90
 #define ABSOLUTE_MAXIMUM_ARM_LENGTH_VERTICAL 67
 #define MAXIMUM_ARM_LENGTH_PARALLEL 48
+#define FRAME_PERIMETER_ARM_RETRACTION_SPEED 0.5
 
 class ManipulatorManager {
     private:
@@ -38,7 +40,7 @@ class ManipulatorManager {
     double *startingAngle;
     double *potDegrees;
 
-    double *calculatedPotentiometerArmAngle;
+    double *currentPotentiometerArmAngle;
     double *calculatedPotentiometerMaximumArmLength;
 
     double *calculatedEncoderArmAngle;

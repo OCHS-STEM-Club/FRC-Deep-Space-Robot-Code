@@ -1,8 +1,11 @@
 #include "Manipulator.hpp" 
 
+//Defines the namespace we'll be using, frc
+using namespace frc;
+
 ManipulatorManager::ManipulatorManager() {
-    stick = new frc::Joystick{ 0 };
-    xbox = new frc::XboxController{ 1 };
+    stick = new Joystick{ 0 };
+    xbox = new XboxController{ 1 };
 
     potentiometer = new frc::AnalogPotentiometer(3, 3600, 0.0);
     hallEffect = new frc::DigitalInput(0);
@@ -20,10 +23,8 @@ ManipulatorManager::ManipulatorManager() {
     //Initializes the variables used for the perimeterCheck() method
     startingAngle = new double;
     potDegrees = new double; 
-    calculatedPotentiometerArmAngle = new double;
+    currentPotentiometerArmAngle = new double;
     *startingAngle = potentiometer->Get();
-
-    calculatedPotentiometerArmAngle = new double;
     calculatedPotentiometerMaximumArmLength = new double;
 
     calculatedEncoderArmAngle = new double;
@@ -43,20 +44,114 @@ ManipulatorManager::ManipulatorManager() {
     armMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 }
 
+//Defines getters and setters for the arm variables
+double armDoubleVariableGetter(double armVariable) {
+    return armVariable;
+}
+
+void armDoubleVariableSetter(double armVariable, double value) {
+    armVariable = value;
+}
+
+bool armBoolVariableGetter(bool armVariable) {
+    return armVariable;
+}
+
+void armBoolVariableSetter(bool armVariable, bool value) {
+    armVariable = value;
+}
+
+// //Defines the encoderUnitConverter method which converts encoder units into other units of choice
+// double encoderUnitConverter(double slope, std::string motorType, double yIntercept) {
+//     double convertedUnits;
+//     //Checks the motorType string for the type of motor needed to convert
+//     if(motorType.compare("Arm Motor")) {
+//         convertedUnits = ((ENCODER_UNIT_TO_DEGREE_SLOPE * armMotor->GetSensorCollection().GetQuadraturePosition()) + ENCODER_UNIT_ARM_ANGLE_Y_INTERCEPT);
+//     }
+    
+//     else if(motorType.compare("Extend Motor")) {
+//         convertedUnits = ((ENCODER_UNIT_TO_INCH_SLOPE * extendMotor->GetSensorCollection().GetQuadraturePosition()) + ENCODER_UNIT_ARM_LENGTH_Y_INTERCEPT);
+//     }
+
+//     return convertedUnits;
+// }
+
+//Defines the maximumArmLength method which calculates the maximum arm length without breaking the frame perimeter
+double maximumArmLengthCalculator(double armAngle) {
+    double maximumArmLength;
+    
+    //Checks whether or not armAngle is at the ABSOLUTE_VERTICAL_ARM_ANGLE
+    if(armAngle == ABSOLUTE_VERTICAL_ARM_ANGLE) {
+        //If true, set armAngle to the absolute max
+        maximumArmLength = ABSOLUTE_MAXIMUM_ARM_LENGTH_VERTICAL;
+    }
+    
+    else {
+        //Otherwise, calculate the maximumArmLength by hand
+        maximumArmLength = abs(MAXIMUM_ARM_LENGTH_PARALLEL/cos(armAngle));
+    }
+    
+    return maximumArmLength;
+}
+
+//Defines the outOfFramePerimeter method which checks whether or not the arm is breaking the frame perimeter, true if it passes, false if it fails
+bool outOfFramePerimeterCheck(double calculatedArmLength, double calculatedMaximumArmLength1, double calculatedMaximumArmLength2) {
+    //Defines the outOfFramePerimeter bool as a representation of whether or not the arm is past its maximum length, and by extension, the frame perimeter
+    bool outOfFramePerimeter = ((calculatedArmLength > calculatedMaximumArmLength1) || (calculatedArmLength > calculatedMaximumArmLength2));
+    
+    //Checks outOfFramePerimeter's parity
+    if(outOfFramePerimeter) {
+        //If true, return false
+        return false;
+    }
+    
+    //Otherwise, return true
+    else {
+        return true;
+    }
+}
+
+//Defines the perimeterCheck method which retracts the arm if it is outside of the frame perimeter
+void ManipulatorManager::perimeterCheck() {
+    //Sets the approximate arm angle and length based on the encoder values
+    armDoubleVariableSetter(*calculatedEncoderArmAngle, ((ENCODER_UNIT_TO_DEGREE_SLOPE * armMotor->GetSensorCollection().GetQuadraturePosition()) + ENCODER_UNIT_ARM_ANGLE_Y_INTERCEPT));
+    armDoubleVariableSetter(*calculatedEncoderArmLength, ((ENCODER_UNIT_TO_INCH_SLOPE * extendMotor->GetSensorCollection().GetQuadraturePosition()) + ENCODER_UNIT_ARM_LENGTH_Y_INTERCEPT));
+    armDoubleVariableSetter(*calculatedPotentiometerMaximumArmLength, maximumArmLengthCalculator(*currentPotentiometerArmAngle));
+    armDoubleVariableSetter(*calculatedEncoderMaximumArmLength, maximumAArmLengthCalculator(*calculatedEncoderArmAngle));
+
+    //Sets the outOfFramePerimeter bool to the value returned by the checking function
+    armBoolVariableSetter(*outOfFramePerimeter, outOfFramePerimeterCheck(*calculatedEncoderArmLength, *calculatedEncoderMaximumArmLength, *calculatedPotentiometerMaximumArmLength));
+
+    //Puts the numerous variables in use in the method on the Smart Dashboard
+    frc::SmartDashboard::PutBoolean("Out of Frame Perimeter", armBoolVariableGetter(*outOfFramePerimeter));
+    frc::SmartDashboard::PutNumber("Calculated Encoder Arm Angle", armDoubleVariableGetter(*calculatedEncoderArmAngle));
+    frc::SmartDashboard::PutNumber("Calculated Encoder Arm Length", armDoubleVariableGetter(*calculatedEncoderArmLength));
+    frc::SmartDashboard::PutNumber("Calculated Encoder Maximum Arm Length", armDoubleVariableGetter(*calculatedEncoderMaximumArmLength));
+    frc::SmartDashboard::PutNumber("Calculated Potentiometer Maximum Arm Length", armDoubleVariableGetter(*calculatedPotentiometerMaximumArmLength));
+} 
+
 void ManipulatorManager::manipulate() {
     *armSpeed = xbox->GetRawAxis(5) * 0.45;
-    *extendSpeed = -xbox->GetRawAxis(1) * 0.7;   //negitive is out
+    //Checks the value of *outOfFramePerimeter
+    if(!armBoolVariableGetter(*outOfFramePerimeter)) {
+        //If false, get the extendSpeed value from the xbox left stick
+        *extendSpeed = -xbox->GetRawAxis(1) * 0.7;   //negative is out
+    }
 
+    else {
+        //Otherwise, retract the arm
+        armDoubleVariableSetter(*extendSpeed, FRAME_PERIMETER_ARM_RETRACTION_SPEED);
+    }
     armMotor->Set(*armSpeed);
     extendMotor->Set(*extendSpeed);
 
     frc::SmartDashboard::PutBoolean("hall effect", !hallEffect->Get());
 
     *potDegrees = potentiometer->Get();
-    *calculatedPotentiometerArmAngle = *potDegrees - *startingAngle + STARTING_ARM_ANGLE;
+    *currentPotentiometerArmAngle = -(*potDegrees - *startingAngle) + STARTING_ARM_ANGLE;
 
     frc::SmartDashboard::PutNumber("potentiometer angle", *potDegrees);
-    frc::SmartDashboard::PutNumber("calculated angle", *calculatedPotentiometerArmAngle);
+    frc::SmartDashboard::PutNumber("Calculated Potentiometer Arm Angle", *currentPotentiometerArmAngle);
 
     if (xbox->GetRawButton(1)) {
         handMotor->Set(0.2);
@@ -87,38 +182,3 @@ void ManipulatorManager::manipulate() {
     }
     frc::SmartDashboard::PutNumber("arm hall position", *armToggle);
 }
-
-//Defines the perimeterCheck method which retracts the arm if it is outside of the frame perimeter
-void ManipulatorManager::perimeterCheck() {
-    //Calculates the approximate arm angle and length based on the encoder values
-    *calculatedEncoderArmAngle = -(ENCODER_UNIT_TO_DEGREE_RATIO) + ENCODER_UNIT_ARM_ANGLE_Y_INTERCEPT;
-    *calculatedEncoderArmLength = ENCODER_UNIT_TO_INCH_RATIO + ENCODER_UNIT_ARM_LENGTH_Y_INTERCEPT;
-    
-    //Checks if either of the calculated angles are at the ABSOLUTE_VERTICAL_ARM_ANGLE
-    if(ABSOLUTE_VERTICAL_ARM_ANGLE == (*calculatedEncoderArmAngle || *calculatedPotentiometerArmAngle)) {
-        //If true, it sets the calculated maximum arm length to ABSOLUTE_MAXIMUM_ARM_LENGTH_VERTICAL
-        *calculatedPotentiometerMaximumArmLength = ABSOLUTE_MAXIMUM_ARM_LENGTH_VERTICAL;
-        *calculatedEncoderMaximumArmLength = ABSOLUTE_MAXIMUM_ARM_LENGTH_VERTICAL;
-    }
-
-    //Otherwise, it calculates the maximum arm length manually
-    else {
-        *calculatedPotentiometerMaximumArmLength = double(abs(MAXIMUM_ARM_LENGTH_PARALLEL/cos(*calculatedPotentiometerArmAngle)));
-        *calculatedEncoderMaximumArmLength = double(abs(MAXIMUM_ARM_LENGTH_PARALLEL/cos(*calculatedEncoderArmAngle)));
-    }
-
-    //Defines the outOfFramePerimeter bool as a representation of whether or not the arm is past its maximum length, and by extension, the frame perimeter
-    *outOfFramePerimeter = *calculatedEncoderArmLength > (*calculatedEncoderMaximumArmLength || *calculatedPotentiometerMaximumArmLength);
-    //If the arm is past its calculated maximum length, retract the arm until it isn't
-    while(*outOfFramePerimeter) {
-        extendMotor->Set(-(*extendSpeed));
-    }
-
-    //Puts the numerous variables in use on the Smart Dashboard
-    frc::SmartDashboard::PutBoolean("Out of Frame Perimeter", *outOfFramePerimeter);
-    frc::SmartDashboard::PutNumber("Calculated Encoder Arm Angle", *calculatedEncoderArmAngle);
-    frc::SmartDashboard::PutNumber("Calculated Potentiometer Arm Angle", *calculatedPotentiometerArmAngle);
-    frc::SmartDashboard::PutNumber("Calculated Encoder Arm Length", *calculatedEncoderArmLength);
-    frc::SmartDashboard::PutNumber("Calculated Encoder Maximum Arm Length", *calculatedEncoderMaximumArmLength);
-    frc::SmartDashboard::PutNumber("Calculated Potentiometer Maximum Arm Length", *calculatedPotentiometerMaximumArmLength);
-} 
