@@ -111,6 +111,7 @@ void Robot::TeleopPeriodic() {
 
   liftManager->Lift();
 
+  manipulatorManager->perimeterCheck();
   manipulatorManager->manipulate();
 }
 
