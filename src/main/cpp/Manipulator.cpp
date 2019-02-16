@@ -6,6 +6,7 @@ ManipulatorManager::ManipulatorManager() {
 
     potentiometer = new frc::AnalogPotentiometer(3, 3600, 0.0);
     hallEffect = new frc::DigitalInput(0);
+    notExtendedLimit = new frc::DigitalInput(1);
 
     armMotor = new WPI_TalonSRX(8);
     extendMotor = new WPI_TalonSRX(7);
@@ -49,14 +50,15 @@ void ManipulatorManager::manipulate() {
     frc::SmartDashboard::PutNumber("caculated angle", *caculatedAngle);
 
     if (xbox->GetRawButton(1)) {
-        handMotor->Set(0.2);
+        handMotor->Set(0.25);
     }
     else if (xbox->GetRawButton(2)) {
-        handMotor->Set(-0.2);
+        handMotor->Set(-0.25);
     }
     else {
         handMotor->Set(0);
     }
+    frc::SmartDashboard::PutNumber("hand current", handMotor->GetOutputCurrent());
 
     frc::SmartDashboard::PutNumber("extend position", extendMotor->GetSensorCollection().GetQuadraturePosition());
     frc::SmartDashboard::PutNumber("arm position", armMotor->GetSensorCollection().GetQuadraturePosition());
@@ -76,4 +78,10 @@ void ManipulatorManager::manipulate() {
         *armLatch = false;
     }
     frc::SmartDashboard::PutNumber("arm hall position", *armToggle);
+
+    frc::SmartDashboard::PutBoolean("test limit", notExtendedLimit->Get());
+    if (notExtendedLimit->Get()) {
+        extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+        //xbox->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.5);
+    }
 }

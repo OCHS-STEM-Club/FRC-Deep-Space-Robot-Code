@@ -120,7 +120,7 @@ void LiftManager::Lift() {
         *liftToggle = 0;
     }
     if (*liftToggle == -1) {
-        *liftToggle = 3;
+        *liftToggle = 2;
     }
 
 
@@ -172,7 +172,7 @@ void LiftManager::Lift() {
         }
     }
 
-    if (*liftToggle == 1) {
+ /*   if (*liftToggle == 1) {
         frc::SmartDashboard::PutString("lift phase", "back move");
         if (!*frontToggle) {
             *leftSetpoint = *leftDistance;
@@ -187,9 +187,9 @@ void LiftManager::Lift() {
     }
     else if (!(*liftToggle ==1)) {
         *frontToggle = false;
-    }
+    } */
 
-    if (*liftToggle == 2) {
+    if (*liftToggle == 1) {
         frc::SmartDashboard::PutString("lift phase", "middle control");
         if (*verticalClimberSpeed > 0) {
             if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
@@ -223,8 +223,8 @@ void LiftManager::Lift() {
                 *rightBoost = 0;
             }
 
-            *leftPower = (*leftBoost + *verticalClimberSpeed) * 0.5;
-            *rightPower = (*rightBoost + *verticalClimberSpeed) * 0.5;
+            *leftPower = (*leftBoost + *verticalClimberSpeed) * 0.8;
+            *rightPower = (*rightBoost + *verticalClimberSpeed) * 0.8;
         }
 
         if (*verticalClimberSpeed > -0.05) {
@@ -239,11 +239,11 @@ void LiftManager::Lift() {
 
         *backPower = (*backSetpoint - *backDistance) * 0.45;
     }
-    if (!(*liftToggle == 2)) {
+    if (!(*liftToggle == 1)) {
         *backToggle = false;
     }
 
-    if (*liftToggle == 3) {
+    if (*liftToggle == 2) {
         frc::SmartDashboard::PutString("lift phase", "back control");
         *backPower = *verticalClimberSpeed * 1.6;
         *leftPower = 0;
@@ -251,6 +251,52 @@ void LiftManager::Lift() {
     }
 
     frc::SmartDashboard::PutNumber("lift number", *liftToggle);
+
+
+    if (xbox->GetRawButton(4)) {
+        *leftPower = ((LEFT_SETPOINT - *leftDistance) / 4.0);
+        *rightPower = ((RIGHT_SETPOINT - *rightDistance) / 4.0);
+        *backPower = ((BACK_SETPOINT - *backDistance) / 4.0);
+
+        if (((*leftDistance + *rightDistance + *backDistance) / 3.0) > 5) {
+            if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
+                *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *backBoost = (*leftDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *leftBoost = 0;
+            }
+            else if (*rightDistance > *leftDistance and *rightDistance > *backDistance) {
+                *leftBoost = (*rightDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *rightBoost = 0;
+            }
+            else if (*backDistance > *leftDistance and *backDistance > *leftDistance) {
+                *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
+                *backBoost = 0;
+            }
+        }
+        else {
+            *leftBoost = 0;
+            *rightBoost = 0;
+            *backBoost = 0;
+        }
+
+        *leftPower = *leftBoost + *leftPower;
+        *rightPower = *rightBoost + *rightPower;
+        *backPower = *backBoost + *backPower;
+
+        if (*leftPower > 0.5) {
+            *leftPower = 0.5;
+        }
+        if (*rightPower > 0.5) {
+            *rightPower = 0.5;
+        }
+        if (*backPower > 0.5) {
+            *backPower = 0.5;
+        }
+    }
+
+
 
 
     if (xbox->GetRawButton(8) and !*offLatch) {
