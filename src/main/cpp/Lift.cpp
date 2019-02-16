@@ -253,7 +253,7 @@ void LiftManager::Lift() {
     frc::SmartDashboard::PutNumber("lift number", *liftToggle);
 
 
-    if (xbox->GetRawButton(4)) {
+ /*   if (xbox->GetRawButton(4)) {
         *leftPower = ((LEFT_SETPOINT - *leftDistance) / 4.0);
         *rightPower = ((RIGHT_SETPOINT - *rightDistance) / 4.0);
         *backPower = ((BACK_SETPOINT - *backDistance) / 4.0);
@@ -294,7 +294,7 @@ void LiftManager::Lift() {
         if (*backPower > 0.5) {
             *backPower = 0.5;
         }
-    }
+    } */
 
 
 
