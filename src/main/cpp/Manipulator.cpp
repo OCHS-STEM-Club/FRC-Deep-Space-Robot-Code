@@ -22,6 +22,11 @@ ManipulatorManager::ManipulatorManager() {
     caculatedAngle = new double;
     *startingAngle = potentiometer->Get();
 
+    armLatch = new bool;
+    armToggle = new int; 
+    *armToggle = 0;
+    *armLatch = false;
+
     armMotor->SetNeutralMode(Brake);
 
     extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
@@ -30,12 +35,12 @@ ManipulatorManager::ManipulatorManager() {
 
 void ManipulatorManager::manipulate() {
     *armSpeed = xbox->GetRawAxis(5) * 0.45;
-    *extendSpeed = -xbox->GetRawAxis(1) * 0.7;
+    *extendSpeed = -xbox->GetRawAxis(1) * 0.7;   //negitive is out
 
     armMotor->Set(*armSpeed);
     extendMotor->Set(*extendSpeed);
 
-    frc::SmartDashboard::PutBoolean("hall effect", -hallEffect->Get());
+    frc::SmartDashboard::PutBoolean("hall effect", !hallEffect->Get());
 
     *potDegrees = potentiometer->Get();
     *caculatedAngle = *potDegrees - *startingAngle + STARTING_ARM_ANGLE;
@@ -55,4 +60,20 @@ void ManipulatorManager::manipulate() {
 
     frc::SmartDashboard::PutNumber("extend position", extendMotor->GetSensorCollection().GetQuadraturePosition());
     frc::SmartDashboard::PutNumber("arm position", armMotor->GetSensorCollection().GetQuadraturePosition());
+
+
+    if (!hallEffect->Get() and !*armLatch) {
+        *armLatch = true;
+
+        if (*extendSpeed > 0) {
+            *armToggle = *armToggle + 1;
+        }
+        else if (*extendSpeed < 0) {
+            *armToggle = *armToggle - 1;
+        }
+    } 
+    else if (hallEffect->Get() and *armLatch) {
+        *armLatch = false;
+    }
+    frc::SmartDashboard::PutNumber("arm hall position", *armToggle);
 }

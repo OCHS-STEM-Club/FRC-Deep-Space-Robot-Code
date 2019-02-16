@@ -45,6 +45,9 @@ class LiftManager {
     double *leftSetpoint;
     double *rightSetpoint;
 
+    bool *offToggle;
+    bool *offLatch; 
+
     public:
     LiftManager();
     void Lift();

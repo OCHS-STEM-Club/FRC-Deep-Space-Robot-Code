@@ -49,6 +49,11 @@ leftSetpoint = new double;
 rightSetpoint = new double;
 *frontToggle = false;
 
+offToggle = new bool;
+offLatch = new bool;
+*offToggle = true;
+*offLatch = false;
+
 leftClimber->SetNeutralMode(Brake);
 rightClimber->SetNeutralMode(Brake);
 backClimber->SetNeutralMode(Brake);
@@ -59,15 +64,29 @@ backClimber->GetSensorCollection().SetQuadraturePosition(0,10);
 }
 
 void LiftManager::Lift() {
+    frc::SmartDashboard::PutNumber("left climber current", leftClimber->GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("right climber current", rightClimber->GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("back climber current", backClimber->GetOutputCurrent());
+
+
+
     *rightStick = xbox->GetRawAxis(3) * 0.45; //no more than 25%
     *leftStick = xbox->GetRawAxis(2) * 0.45; //no more than 25%
 
-    if (*rightStick > *leftStick) {
-        *verticalClimberSpeed = *rightStick;
+    frc::SmartDashboard::PutNumber("left trigger", xbox->GetRawAxis(2));
+    frc::SmartDashboard::PutNumber("right trigger", xbox->GetRawAxis(3));
+
+    if ((xbox->GetRawAxis(3) > 0.1) or (xbox->GetRawAxis(2) > 0.1)) {
+        if (*rightStick > *leftStick) {
+            *verticalClimberSpeed = *rightStick;
+        }
+        else if (*leftStick > *rightStick) {
+            *verticalClimberSpeed = -*leftStick;
+        } 
     }
-    else if (*leftStick > *rightStick) {
-        *verticalClimberSpeed = -*leftStick;
-    } 
+    else {
+        *verticalClimberSpeed = 0;
+    }
 
 
     frc::SmartDashboard::PutNumber("liftPower", *verticalClimberSpeed);
@@ -106,6 +125,7 @@ void LiftManager::Lift() {
 
 
     if (*liftToggle == 0) {
+
         frc::SmartDashboard::PutString("lift phase", "control of all");
         if (*verticalClimberSpeed > 0) {
             if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
@@ -231,6 +251,26 @@ void LiftManager::Lift() {
     }
 
     frc::SmartDashboard::PutNumber("lift number", *liftToggle);
+
+
+    if (xbox->GetRawButton(8) and !*offLatch) {
+        *offToggle = !*offToggle;
+        *offLatch = true;
+    }
+    else if (!xbox->GetRawButton(8) and *offLatch) {
+        *offLatch = false;
+    }
+
+    if (*offToggle) {
+        
+    }
+    else if (!*offToggle) {
+        *leftPower = 0;
+        *rightPower = 0;
+        *backPower = 0;
+    }
+
+    frc::SmartDashboard::PutBoolean("lift on?", *offToggle);
 
 
     leftClimber->Set(-*leftPower); 
