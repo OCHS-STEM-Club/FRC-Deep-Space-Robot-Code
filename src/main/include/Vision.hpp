@@ -67,4 +67,4 @@ public:
     PixyManager();
     void pixy(); 
     void pixyFunct();
-};
+}; 
