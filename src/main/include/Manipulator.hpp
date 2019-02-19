@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 #include <frc/WPILib.h>
 #include <frc/Joystick.h>
 #include <ctre/Phoenix.h>
@@ -17,6 +18,7 @@
 #define ABSOLUTE_MAXIMUM_ARM_LENGTH_VERTICAL 67
 #define MAXIMUM_ARM_LENGTH_PARALLEL 48
 #define FRAME_PERIMETER_ARM_RETRACTION_SPEED 0.5
+#define DEGREE_TO_RADIAN_RATIO M_PI/180.0
 
 class ManipulatorManager {
     private:
@@ -47,7 +49,7 @@ class ManipulatorManager {
     double *calculatedEncoderArmLength;
     double *calculatedEncoderMaximumArmLength;
 
-    bool *outOfFramePerimeter;
+    bool *outOfFramePerimeterBool;
 
     bool *armLatch;
     int *armToggle;
