@@ -7,25 +7,43 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
-
 #include <iostream>
-
 #include <frc/SmartDashboard/SmartDashboard.h>
-
 #include "Drive.hpp"
-
+#include "Vision.hpp"
+#include "Lift.hpp"
+#include "Manipulator.hpp"
 #include <ctre/Phoenix.h> 
 #include <frc/Joystick.h>
+#include <frc/I2C.h>
+
+typedef unsigned char byte;
+
+int step = 0;
+int autoNum = 0;
 
 Robot::Robot() {
   driveManager = new DriveManager();
+  pixyManager = new PixyManager();
+  liftManager = new LiftManager();
+  manipulatorManager = new ManipulatorManager();
 }
+
+frc::Joystick *stick;
 
 void Robot::RobotInit() {
   m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  stick = new frc::Joystick{ 0 };
+
+/*cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture("1792", 0);
+camera.SetResolution(160, 120);
+camera.SetFPS(10); */
 }
+
+
 
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -37,18 +55,20 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {}
 
-/**
- * This autonomous (along with the chooser code above) shows how to select
- * between different autonomous modes using the dashboard. The sendable chooser
- * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
- * remove all of the chooser code and uncomment the GetString line to get the
- * auto name from the text box below the Gyro.
- *
- * You can add additional auto modes by adding additional comparisons to the
- * if-else structure below with additional strings. If using the SendableChooser
- * make sure to add them to the chooser code above as well.
- */
-frc::Joystick stick { 0 };
+void Robot::RunEric() {
+  pixyManager->pixy();
+
+  if (stick->GetRawButton(12)) {
+    pixyManager->pixyFunct();
+  }
+  else {
+    driveManager->driveTrain();
+  } 
+
+  liftManager->Lift();
+
+  manipulatorManager->manipulate();
+}
 
 void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
@@ -61,6 +81,8 @@ void Robot::AutonomousInit() {
   } else {
     // Default Auto goes here
   }
+
+driveManager->reset();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -69,16 +91,55 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+
+ /*if (autoNum = 0) {
+    switch(step) {
+      case 0: driveManager->turn(90);
+        break;
+    } 
+ } */
+ //driveManager->turn(180);
+
+  /*pixyManager->pixy();
+
+  if (stick->GetRawButton(12)) {
+    pixyManager->pixyFunct();
+  }
+  else {
+    driveManager->driveTrain();
+  } 
+
+  liftManager->Lift();
+
+  manipulatorManager->manipulate(); */
+
+  RunEric();
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+}
+
 void Robot::TeleopPeriodic() {
-	
-  driveManager->driveTrain();
+  //driveManager->driveTrain();
+  /*pixyManager->pixy();
 
+  if (stick->GetRawButton(12)) {
+    pixyManager->pixyFunct();
+  }
+  else {
+    driveManager->driveTrain();
+  } 
+
+  liftManager->Lift();
+
+  manipulatorManager->manipulate(); */
+
+  RunEric();
 }
 
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  
+}
 
 #ifndef RUNNING_FRC_TESTS
 START_ROBOT_CLASS(Robot)
