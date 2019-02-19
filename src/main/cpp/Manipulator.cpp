@@ -50,10 +50,10 @@ void ManipulatorManager::manipulate() {
     frc::SmartDashboard::PutNumber("caculated angle", *caculatedAngle);
 
     if (xbox->GetRawButton(1)) {
-        handMotor->Set(0.25);
+        handMotor->Set(0.4);
     }
     else if (xbox->GetRawButton(2)) {
-        handMotor->Set(-0.25);
+        handMotor->Set(-0.4);
     }
     else {
         handMotor->Set(0);

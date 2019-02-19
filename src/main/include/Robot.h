@@ -27,6 +27,7 @@ class Robot : public frc::IterativeRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
+  void RunEric();
   Robot();
 
  private:
