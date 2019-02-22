@@ -48,7 +48,7 @@ void PixyManager::pixy() {
     Pixyy2 = translate[12];
     Pixyw2 = translate[13];
     Pixyh2 = translate[14];
-
+ 
     goodTargets = true; 
     frc::SmartDashboard::PutString("pixyTargets", "two targets");
   }
@@ -104,7 +104,7 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("areaDifference", (bigSize - smallSize));
 
  
- 
+ /*
   frc::SmartDashboard::PutNumber("pixy0", translate[0]);
   frc::SmartDashboard::PutNumber("pixy1", translate[1]);
   frc::SmartDashboard::PutNumber("pixy2", translate[2]);
@@ -120,7 +120,7 @@ void PixyManager::pixy() {
   frc::SmartDashboard::PutNumber("pixy12", translate[12]);
   frc::SmartDashboard::PutNumber("pixy13", translate[13]);
   frc::SmartDashboard::PutNumber("pixy14", translate[14]);
-  frc::SmartDashboard::PutNumber("pixy15", translate[15]); 
+  frc::SmartDashboard::PutNumber("pixy15", translate[15]);  */
 
   pixyDistanceBetweenTargets = abs(Pixyx1-Pixyx2);
   frc::SmartDashboard::PutNumber("pixyDistanceBetweenTargets", pixyDistanceBetweenTargets);
@@ -220,21 +220,29 @@ void PixyManager::pixyFunct() {
   }
 */
 
-if (angle < 180) {
-  turnWant = 90;
-}
+  if ((angle < 135) && (angle > 45)) {
+    turnWant = 90;
+  }
+  else if ((angle > 315) && (angle < 360)) {
+    turnWant = 360;
+  }
+  else if ((angle > 0) && (angle < 45)) {
+    turnWant = 0;
+  }
+  else if ((angle > 135) && (angle < 225)) {
+    turnWant = 180; 
+  }
+  else if ((angle > 225) && (angle < 315)) {
+    turnWant = 270;
+  }
 
-if (angle > 180) {
-  turnWant = 270; 
-}
+  turnOffset = turnWant - angle; 
+  turnCorrection = (1.0 * turnOffset/180) * 0.65;
 
-turnOffset = turnWant - angle; 
-turnCorrection = (1.0 * turnOffset/180) * 0.65;
-
-frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
-if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
-  turnCorrection = 0;
-}
+  frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
+  if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
+    turnCorrection = 0;
+  }
 
 
   pixyDistanceCorrection = PIXY_DISTANCE_X - pixyDistanceBetweenTargets;

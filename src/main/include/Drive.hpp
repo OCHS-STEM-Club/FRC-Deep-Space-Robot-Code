@@ -20,6 +20,7 @@ class DriveManager {
     rev::CANSparkMax *driveMotorBackLeft;
     rev::CANSparkMax *driveMotorBackRight; 
 
+
     //encoders for CANSparkMax
     rev::CANEncoder *encFrontLeft;
     rev::CANEncoder *encFrontRight;
@@ -28,7 +29,11 @@ class DriveManager {
 
     frc::MecanumDrive *mecanumDrive;
 
+    //frc::PIDController *frontLeftPID;
+
     AHRS *ahrs; 
+
+    frc::Timer *time;
 
     double *xStickValue;
     double *yStickValue;
@@ -36,6 +41,13 @@ class DriveManager {
 
     double *driveGyro; 
     double *gyro;
+    double *error;
+
+    double *p;
+    double *i;
+    double *integral;
+    double *d;
+    double *prevError;
 
     bool *driveToggle; 
     bool *driveLatch; 
@@ -47,4 +59,6 @@ class DriveManager {
     DriveManager();
     void driveTrain(); 
     void control(double turn, double strafe, double drive , bool brake); 
+    void turn(int angle);
+    void reset();
 };
