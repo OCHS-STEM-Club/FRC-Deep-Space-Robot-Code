@@ -67,6 +67,7 @@ void Robot::RunEric() {
 
   liftManager->Lift();
 
+  manipulatorManager->perimeterCheck();
   manipulatorManager->manipulate();
 }
 
@@ -132,6 +133,7 @@ void Robot::TeleopPeriodic() {
 
   liftManager->Lift();
 
+  manipulatorManager->perimeterCheck();
   manipulatorManager->manipulate(); */
 
   RunEric();
