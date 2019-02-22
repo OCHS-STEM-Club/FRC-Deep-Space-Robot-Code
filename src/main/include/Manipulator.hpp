@@ -27,6 +27,7 @@ class ManipulatorManager {
 
     frc::AnalogPotentiometer *potentiometer;
     frc::DigitalInput *hallEffect;
+    frc::DigitalInput *notExtendedLimit;
 
     WPI_TalonSRX *armMotor;
     WPI_TalonSRX *extendMotor;
