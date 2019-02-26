@@ -10,6 +10,10 @@ ManipulatorManager::ManipulatorManager() {
     potentiometer = new frc::AnalogPotentiometer(3, 3600, 0.0);
     hallEffect = new frc::DigitalInput(0);
 
+    //variables for the habFrontWheelCheck() method
+    ultrasonic = new frc::Ultrasonic(5, 5, kMilliMeters);
+    ultraMillimeters = new double;
+
     armMotor = new WPI_TalonSRX(8);
     extendMotor = new WPI_TalonSRX(7);
     handMotor = new WPI_TalonSRX(6);
@@ -152,7 +156,7 @@ void ManipulatorManager::manipulate() {
 
     else {
         //Otherwise, retract the arm
-        *extendSpeed = FRAME_PERIMETER_ARM_RETRACTION_SPEED;
+        *extendSpeed = -FRAME_PERIMETER_ARM_RETRACTION_SPEED;
     }
     armMotor->Set(*armSpeed);
     extendMotor->Set(*extendSpeed);
@@ -193,4 +197,9 @@ void ManipulatorManager::manipulate() {
         *armLatch = false;
     }
     frc::SmartDashboard::PutNumber("arm hall position", *armToggle);
+}
+
+void ManipulatorManager::habFrontWheelCheck() {
+    *ultraMillimeters = ultrasonic->GetRangeMM();
+    frc::SmartDashboard::PutNumber("ultrasonic milimeter value", *ultraMillimeters);
 }
