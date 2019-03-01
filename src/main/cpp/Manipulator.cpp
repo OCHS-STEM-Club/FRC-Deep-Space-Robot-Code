@@ -15,6 +15,8 @@ ManipulatorManager::ManipulatorManager() {
     extendMotor = new WPI_TalonSRX(7);
     handMotor = new WPI_TalonSRX(6);
 
+    ultra = new frc::AnalogInput(1);
+
     //pidControl = new double;
     //pid = new frc::PIDController(0 ,0, 0, &potentiometer, armMotor);
 
@@ -40,6 +42,7 @@ ManipulatorManager::ManipulatorManager() {
     *armLatch = false;
 
     armMotor->SetNeutralMode(Brake);
+    extendMotor->SetNeutralMode(Brake);
 
     extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
     armMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
@@ -201,4 +204,7 @@ void ManipulatorManager::manipulate() {
         extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
         //xbox->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.5);
     }
+
+    frc::SmartDashboard::PutNumber("ultVoltage", ultra->GetVoltage());
+    frc::SmartDashboard::PutNumber("ultrasonic distance", (ultra->GetVoltage() / 0.004883) * 5);
 }

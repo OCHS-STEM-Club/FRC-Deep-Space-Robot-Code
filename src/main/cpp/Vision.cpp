@@ -5,7 +5,7 @@ PixyManager::PixyManager () {
 
   I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS);
   stick = new frc::Joystick{ 0 };
-
+ 
   target = 170;    
 
     //Gyro
@@ -162,7 +162,7 @@ void PixyManager::pixy() {
 void PixyManager::pixyFunct() {
   distanceToIdealCenter = ((1.0 * Pixyx1 + Pixyx2) / 2) - PIXY_CENTER_X;
 
-  strafeCorrectionToIdealCenter = (distanceToIdealCenter/125) * 0.85;
+  strafeCorrectionToIdealCenter = (distanceToIdealCenter/100) * 0.865;
 
   if (strafeCorrectionToIdealCenter > ANTI_MISSILE_CODE) {
     strafeCorrectionToIdealCenter = ANTI_MISSILE_CODE;
@@ -180,10 +180,10 @@ void PixyManager::pixyFunct() {
 
   if(abs(PIXY_CENTER_X-xCenter) < PIXY_DEADBAND_X) {
     strafeCorrectionToIdealCenter = 0;
-    frc::SmartDashboard::PutBoolean("deadbandTest", true);
+    //frc::SmartDashboard::PutBoolean("deadbandTest", true);
   }
   else {
-    frc::SmartDashboard::PutBoolean("deadbandTest", false);
+    //frc::SmartDashboard::PutBoolean("deadbandTest", false);
   }
 
 //turn correction 

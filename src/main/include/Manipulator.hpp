@@ -33,6 +33,8 @@ class ManipulatorManager {
     WPI_TalonSRX *extendMotor;
     WPI_TalonSRX *handMotor;
 
+    frc::AnalogInput *ultra;
+
     //double *pidControl;
     //frc::PIDController *pid;
 

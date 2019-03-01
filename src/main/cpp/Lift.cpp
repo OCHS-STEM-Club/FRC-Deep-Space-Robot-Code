@@ -138,7 +138,7 @@ void LiftManager::Lift() {
                 *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = 0;
             }
-            else if (*backDistance > *leftDistance and *backDistance > *leftDistance) {
+            else if (*backDistance > *leftDistance and *backDistance > *rightDistance) {
                 *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *backBoost = 0;
@@ -160,7 +160,7 @@ void LiftManager::Lift() {
                 *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = 0;
             }
-            else if (*backDistance < *leftDistance and *backDistance < *leftDistance) {
+            else if (*backDistance < *leftDistance and *backDistance < *rightDistance) {
                 *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *backBoost = 0;
@@ -202,7 +202,7 @@ void LiftManager::Lift() {
                 *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = 0;
             }
-            else if (*backDistance > *leftDistance and *backDistance > *leftDistance) {
+            else if (*backDistance > *leftDistance and *backDistance > *rightDistance) {
                 *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *backBoost = 0;
