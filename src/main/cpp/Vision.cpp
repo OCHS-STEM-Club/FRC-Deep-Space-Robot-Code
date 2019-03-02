@@ -159,6 +159,8 @@ void PixyManager::pixy() {
   
 }
 
+
+
 void PixyManager::pixyFunct() {
   distanceToIdealCenter = ((1.0 * Pixyx1 + Pixyx2) / 2) - PIXY_CENTER_X;
 
@@ -274,4 +276,65 @@ void PixyManager::pixyFunct() {
     driveManager->control(0, 0, 0, true);
   }
   
+}
+
+//angle lineup without pixy targets
+void PixyManager::angleLineup() {
+ if ((angle < 135) && (angle > 45)) {
+    turnWant = 90;
+  }
+  else if ((angle > 315) && (angle < 360)) {
+    turnWant = 360;
+  }
+  else if ((angle > 0) && (angle < 45)) {
+    turnWant = 0;
+  }
+  else if ((angle > 135) && (angle < 225)) {
+    turnWant = 180; 
+  }
+  else if ((angle > 225) && (angle < 315)) {
+    turnWant = 270;
+  }
+
+  turnOffset = turnWant - angle; 
+  turnCorrection = (1.0 * turnOffset/180) * 0.65;
+
+  frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
+  if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
+    turnCorrection = 0;
+  }
+
+    driveManager->control(turnCorrection , 0, 0, true);
+}
+
+//angle lineup for rocket
+void PixyManager::pixyRocketSides() {
+  
+  if ((angle < 360) and (angle > 270)) {
+    turnWant = 299;
+  }
+  else if ((angle > 0) and (angle < 90)) {
+    turnWant = 61;
+  }
+  else if ((angle > 90) and (angle < 180)) {
+    turnWant = 119;
+  }
+  else if ((angle > 180) and (angle < 270)) {
+    turnWant = 241;
+  }
+
+  turnOffset = turnWant - angle; 
+  turnCorrection = (1.0 * turnOffset/180) * 0.65;
+
+  frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
+  if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
+    turnCorrection = 0;
+  }
+
+//  if (goodTargets) {
+    driveManager->control(turnCorrection, 0, 0, true);
+//  }
+//  else {
+//    driveManager->control(0, 0, 0, true);
+ // }
 }

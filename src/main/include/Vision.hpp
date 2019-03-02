@@ -8,7 +8,7 @@
 
 #include "Drive.hpp"
 
-#define I2C_ADDRESS 0x64
+#define I2C_ADDRESS 0x64 
 
 #define PIXY_CENTER_X 140 //170
 #define PIXY_DEADBAND_X 2.5
@@ -67,4 +67,6 @@ public:
     PixyManager();
     void pixy(); 
     void pixyFunct();
+    void angleLineup();
+    void pixyRocketSides();
 }; 

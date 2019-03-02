@@ -61,6 +61,12 @@ void Robot::RunEric() {
   if (stick->GetRawButton(12)) {
     pixyManager->pixyFunct();
   }
+ /* else if (stick->GetRawButton(8)) {
+    pixyManager->angleLineup();
+  }
+  else if (stick->GetRawButton(7)) {
+    pixyManager->pixyRocketSides();
+  } */
   else {
     driveManager->driveTrain();
   } 
