@@ -23,7 +23,13 @@ class LiftManager {
     WPI_TalonSRX *leftClimber; 
     WPI_TalonSRX *rightClimber; 
     WPI_TalonSRX *backClimber; 
-    
+
+    frc::DigitalInput *leftLimit;
+    frc::DigitalInput *rightLimit;
+    frc::DigitalInput *backLimit;
+
+    frc::AnalogInput *ultra;
+
     double *verticalClimberSpeed;
     double *rightStick;
     double *leftStick;

@@ -43,6 +43,12 @@ class DriveManager {
     double *gyro;
     double *error;
 
+    double angle;
+    int revolutions;
+    double turnWant;
+    double turnOffset;
+    double turnCorrection;
+
     double *p;
     double *i;
     double *integral;

@@ -8,6 +8,12 @@ leftClimber = new WPI_TalonSRX(11);
 rightClimber = new WPI_TalonSRX(9);
 backClimber = new WPI_TalonSRX(10);
 
+leftLimit = new frc::DigitalInput(5);
+rightLimit = new frc::DigitalInput(6);
+backLimit = new frc::DigitalInput(7);
+
+ultra = new frc::AnalogInput(1);
+
 /*
 leftClimber->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, K_PID_LOOP_IDX, K_TIMEOUT_MS);
 leftClimber->SetSensorPhase(true);
@@ -170,6 +176,12 @@ void LiftManager::Lift() {
             *rightPower = *rightBoost + *verticalClimberSpeed;
             *backPower = *backBoost + *verticalClimberSpeed;
         }
+
+        if (*verticalClimberSpeed == 0) {
+            *leftPower = 0;
+            *rightPower = 0;
+            *backPower = 0;
+        }
     }
 
     if (*liftToggle == 1) {
@@ -192,25 +204,17 @@ void LiftManager::Lift() {
     if (*liftToggle == 2) {
         frc::SmartDashboard::PutString("lift phase", "middle control");
         if (*verticalClimberSpeed > 0) {
-            if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
+            if (*leftDistance > *rightDistance) {
                 *rightBoost = (*leftDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
-                *backBoost = (*leftDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *leftBoost = 0;
             }
-            else if (*rightDistance > *leftDistance and *rightDistance > *backDistance) {
+            else if (*rightDistance > *leftDistance) {
                 *leftBoost = (*rightDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
-                *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = 0;
             }
-            else if (*backDistance > *leftDistance and *backDistance > *rightDistance) {
-                *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
-                *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
-                *backBoost = 0;
-            }
 
-            *leftPower = *leftBoost + *verticalClimberSpeed;
-            *rightPower = *rightBoost + *verticalClimberSpeed;
-            *backPower = *backBoost + *verticalClimberSpeed;
+            *leftPower = *leftBoost + *verticalClimberSpeed * 0.6;
+            *rightPower = *rightBoost + *verticalClimberSpeed * 0.6;
         }
 
         if (*verticalClimberSpeed < 0) {
@@ -330,4 +334,19 @@ void LiftManager::Lift() {
     //frc::SmartDashboard::PutNumber("leftEnc", leftClimber->GetSensorCollection().GetQuadraturePosition());
 
 //leftClimber->GetSensorCollection().IsFwdLimitSwitchClosed();
+
+    /*
+    if (leftLimit->Get()) {
+        leftClimber->GetSensorCollection().SetQuadraturePosition(0, 10);
+    }
+    if (rightLimit->Get()) {
+        rightClimber->GetSensorCollection().SetQuadraturePosition(0, 10);
+    }
+    if (backLimit->Get()) {
+        backClimber->GetSensorCollection().SetQuadraturePosition(0, 10);
+    } */
+
+
+    frc::SmartDashboard::PutNumber("ultVoltage", ultra->GetVoltage());
+    frc::SmartDashboard::PutNumber("ultrasonic distance", (ultra->GetVoltage() / 0.004883) * 5);
 }

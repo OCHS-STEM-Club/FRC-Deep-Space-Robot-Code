@@ -15,8 +15,9 @@ ManipulatorManager::ManipulatorManager() {
     extendMotor = new WPI_TalonSRX(7);
     handMotor = new WPI_TalonSRX(6);
 
-    ultra = new frc::AnalogInput(1);
 
+    //extendMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+    //armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::RemoteSensor0, 0, 10);
     //pidControl = new double;
     //pid = new frc::PIDController(0 ,0, 0, &potentiometer, armMotor);
 
@@ -147,18 +148,17 @@ void ManipulatorManager::perimeterCheck() {
 } 
 
 void ManipulatorManager::manipulate() {
-    *armSpeed = xbox->GetRawAxis(5) * 0.45;
+    
     //Checks the value of *outOfFramePerimeterBool
     if(!*outOfFramePerimeterBool) {
         //If false, get the extendSpeed value from the xbox left stick
         *extendSpeed = -xbox->GetRawAxis(1) * 0.7;   //negative is out
     }
-
     else {
         //Otherwise, retract the arm
-        *extendSpeed = FRAME_PERIMETER_ARM_RETRACTION_SPEED;
+        *extendSpeed = -FRAME_PERIMETER_ARM_RETRACTION_SPEED;
     }
-    armMotor->Set(*armSpeed);
+
     extendMotor->Set(*extendSpeed);
 
     frc::SmartDashboard::PutBoolean("hall effect", !hallEffect->Get());
@@ -201,10 +201,18 @@ void ManipulatorManager::manipulate() {
 
     frc::SmartDashboard::PutBoolean("test limit", notExtendedLimit->Get());
     if (notExtendedLimit->Get()) {
-        extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+        //extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
         //xbox->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.5);
     }
 
-    frc::SmartDashboard::PutNumber("ultVoltage", ultra->GetVoltage());
-    frc::SmartDashboard::PutNumber("ultrasonic distance", (ultra->GetVoltage() / 0.004883) * 5);
+    *armSpeed = xbox->GetRawAxis(5) * 0.45;
+    if (*currentPotentiometerArmAngle > 66 && *armSpeed > 0) {
+        *armSpeed = 0;
+    }
+    if (*currentPotentiometerArmAngle < -33 && *armSpeed < 0) {
+        *armSpeed = 0;
+    }
+
+    armMotor->Set(*armSpeed);
+
 }

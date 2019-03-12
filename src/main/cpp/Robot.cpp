@@ -71,6 +71,8 @@ void Robot::RunEric() {
     driveManager->driveTrain();
   } 
 
+  
+
   liftManager->Lift();
 
   manipulatorManager->perimeterCheck();
