@@ -15,8 +15,10 @@ ManipulatorManager::ManipulatorManager() {
     extendMotor = new WPI_TalonSRX(7);
     handMotor = new WPI_TalonSRX(6);
 
-
-    //extendMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+//ctre::phoenix::motorcontrol::can::FilterConfiguration::remoteSensorSource();
+    extendMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+    extendMotor->SetInverted(true);
+    //armMotor->ConfigRemoteFeedbackFilter(3, frc::AnalogInput, 0, 10);
     //armMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::RemoteSensor0, 0, 10);
     //pidControl = new double;
     //pid = new frc::PIDController(0 ,0, 0, &potentiometer, armMotor);
@@ -148,18 +150,22 @@ void ManipulatorManager::perimeterCheck() {
 } 
 
 void ManipulatorManager::manipulate() {
+    pov = xbox->GetPOV();
+    frc::SmartDashboard::PutNumber("xbox pov", pov);
     
     //Checks the value of *outOfFramePerimeterBool
     if(!*outOfFramePerimeterBool) {
         //If false, get the extendSpeed value from the xbox left stick
-        *extendSpeed = -xbox->GetRawAxis(1) * 0.7;   //negative is out
+        *extendSpeed = xbox->GetRawAxis(1) * 0.7;   //negative is out
     }
     else {
         //Otherwise, retract the arm
-        *extendSpeed = -FRAME_PERIMETER_ARM_RETRACTION_SPEED;
+        *extendSpeed = FRAME_PERIMETER_ARM_RETRACTION_SPEED;
     }
 
-    extendMotor->Set(*extendSpeed);
+    if (pov == -1) {
+        extendMotor->Set(ControlMode::PercentOutput, *extendSpeed);
+    }
 
     frc::SmartDashboard::PutBoolean("hall effect", !hallEffect->Get());
 
@@ -205,14 +211,64 @@ void ManipulatorManager::manipulate() {
         //xbox->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.5);
     }
 
-    *armSpeed = xbox->GetRawAxis(5) * 0.45;
+    if (pov == -1) {
+        *armSpeed = xbox->GetRawAxis(5) * 0.45;
+    }
+
+    if (pov == -1) {
+        extendMotor->ConfigPeakOutputReverse(1);
+        extendMotor->ConfigPeakOutputForward(1);
+    }
+    else {
+        extendMotor->ConfigPeakOutputReverse(0.4);
+        extendMotor->ConfigPeakOutputForward(0.4);
+    }
+
+
     if (*currentPotentiometerArmAngle > 66 && *armSpeed > 0) {
         *armSpeed = 0;
+        roatateBoundsCheck = false;
     }
-    if (*currentPotentiometerArmAngle < -33 && *armSpeed < 0) {
+    else if (*currentPotentiometerArmAngle < -33 && *armSpeed < 0) {
         *armSpeed = 0;
+        roatateBoundsCheck = false;
+    }
+    else {
+        roatateBoundsCheck = true;
+    }
+    
+
+    if (xbox->GetRawButton(7)) {
+        extendMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+    }
+
+    if (roatateBoundsCheck && (pov == 180)) {
+        armError = (HATCHLOWEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+
+        if (armError > 0.45) {
+            armError = 0.45;
+        }
+        if (armError < -0.45) {
+            armError = -0.45;
+        }
+
+        *armSpeed = armError;
+        extendMotor->Set(ControlMode::Position, 0);
+    }
+
+    if (roatateBoundsCheck && (pov == 90)) {
+        armError = (HATCHMEDIUMEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+
+        if (armError > 0.45) {
+            armError = 0.45;
+        }
+        if (armError < -0.45) {
+            armError = -0.45;
+        }
+
+        *armSpeed = armError;
+        extendMotor->Set(ControlMode::Position, 3837.7);
     }
 
     armMotor->Set(*armSpeed);
-
 }

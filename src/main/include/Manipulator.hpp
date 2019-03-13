@@ -20,6 +20,9 @@
 #define FRAME_PERIMETER_ARM_RETRACTION_SPEED 0.5
 #define DEGREE_TO_RADIAN_RATIO M_PI/180.0
 
+#define HATCHLOWEXPECTED -11.4
+#define HATCHMEDIUMEXPECTED 61.5
+
 class ManipulatorManager {
     private:
     frc::Joystick *stick; 
@@ -32,6 +35,8 @@ class ManipulatorManager {
     WPI_TalonSRX *armMotor;
     WPI_TalonSRX *extendMotor;
     WPI_TalonSRX *handMotor;
+
+    
 
     //double *pidControl;
     //frc::PIDController *pid;
@@ -54,6 +59,10 @@ class ManipulatorManager {
 
     bool *armLatch;
     int *armToggle;
+
+    double armError;
+    bool roatateBoundsCheck;
+    int pov;
 
     //Defines the methods called within the Manipulator src
     public:

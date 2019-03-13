@@ -30,6 +30,7 @@ Robot::Robot() {
 }
 
 frc::Joystick *stick;
+frc::XboxController *xbox;
 
 void Robot::RobotInit() {
   m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
@@ -37,10 +38,15 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   stick = new frc::Joystick{ 0 };
+  xbox = new frc::XboxController{ 1 };
 
 /*cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture("1792", 0);
-camera.SetResolution(160, 120);
-camera.SetFPS(10); */
+camera.SetResolution(160, 120); //160,120
+camera.SetFPS(10);  
+camera.SetPixelFormat(cs::VideoMode::kGray); */
+//frc::CameraServer::RemoveCamera("1792");
+//UsbCamera.RemoveCamera("1792");
+//CameraServer::GetInstance()->RemoveCamera("1792");
 }
 
 
@@ -70,8 +76,6 @@ void Robot::RunEric() {
   else {
     driveManager->driveTrain();
   } 
-
-  
 
   liftManager->Lift();
 
@@ -126,6 +130,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  //CameraServer::GetInstance()->RemoveCamera("1792");
 }
 
 void Robot::TeleopPeriodic() {
