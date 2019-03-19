@@ -28,7 +28,7 @@ class LiftManager {
     frc::DigitalInput *rightLimit;
     frc::DigitalInput *backLimit;
 
-    frc::AnalogInput *ultra;
+    frc::AnalogInput *ultra; 
 
     double *verticalClimberSpeed;
     double *rightStick;

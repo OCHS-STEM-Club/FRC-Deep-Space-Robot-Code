@@ -257,7 +257,7 @@ void ManipulatorManager::manipulate() {
     }
 
     if (roatateBoundsCheck && (pov == 90)) {
-        armError = (HATCHMEDIUMEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+        armError = (HATCHLEVELTWOEXPECTED - *currentPotentiometerArmAngle) / 180.0;
 
         if (armError > 0.45) {
             armError = 0.45;
@@ -268,6 +268,34 @@ void ManipulatorManager::manipulate() {
 
         *armSpeed = armError;
         extendMotor->Set(ControlMode::Position, 3837.7);
+    }
+
+    if (roatateBoundsCheck && (pov == 270)) {
+        armError = (CARGOLEVELONEEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+
+        if (armError > 0.45) {
+            armError = 0.45;
+        }
+        if (armError < -0.45) {
+            armError = -0.45;
+        }
+
+        *armSpeed = armError;
+        extendMotor->Set(ControlMode::Position, 0);
+    }
+
+    if (roatateBoundsCheck && (pov == 0)) {
+        armError = (CARGOLEVELTWOEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+
+        if (armError > 0.45) {
+            armError = 0.45;
+        }
+        if (armError < -0.45) {
+            armError = -0.45;
+        }
+
+        *armSpeed = armError;
+        extendMotor->Set(ControlMode::Position, 20120.6);
     }
 
     armMotor->Set(*armSpeed);

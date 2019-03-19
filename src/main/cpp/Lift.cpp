@@ -256,11 +256,21 @@ void LiftManager::Lift() {
 
     frc::SmartDashboard::PutNumber("lift number", *liftToggle);
 
-
- /*   if (xbox->GetRawButton(4)) {
+/*
+    if (xbox->GetRawButton(4)) {
         *leftPower = ((LEFT_SETPOINT - *leftDistance) / 4.0);
         *rightPower = ((RIGHT_SETPOINT - *rightDistance) / 4.0);
         *backPower = ((BACK_SETPOINT - *backDistance) / 4.0);
+
+        if (*leftPower > 0.5) {
+            *leftPower = 0.5;
+        }
+        if (*rightPower > 0.5) {
+            *rightPower = 0.5;
+        }
+        if (*backPower > 0.5) {
+            *backPower = 0.5;
+        }
 
         if (((*leftDistance + *rightDistance + *backDistance) / 3.0) > 5) {
             if (*leftDistance > *rightDistance and *leftDistance > *backDistance) {
@@ -273,7 +283,7 @@ void LiftManager::Lift() {
                 *backBoost = (*rightDistance - *backDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = 0;
             }
-            else if (*backDistance > *leftDistance and *backDistance > *leftDistance) {
+            else if (*backDistance > *leftDistance and *backDistance > *rightDistance) {
                 *leftBoost = (*backDistance - *leftDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *rightBoost = (*backDistance - *rightDistance) / CLIMBER_SEPERATION_ROTATIONS;
                 *backBoost = 0;
@@ -289,7 +299,7 @@ void LiftManager::Lift() {
         *rightPower = *rightBoost + *rightPower;
         *backPower = *backBoost + *backPower;
 
-        if (*leftPower > 0.5) {
+      /*  if (*leftPower > 0.5) {
             *leftPower = 0.5;
         }
         if (*rightPower > 0.5) {
@@ -297,8 +307,8 @@ void LiftManager::Lift() {
         }
         if (*backPower > 0.5) {
             *backPower = 0.5;
-        }
-    } */
+        } */
+    //}  
 
 
 

@@ -169,11 +169,11 @@ void DriveManager::driveTrain() {
     frc::SmartDashboard::PutNumber("voltageBackLeft", driveMotorBackLeft->GetBusVoltage());
     frc::SmartDashboard::PutNumber("voltageBackRight", driveMotorBackRight->GetBusVoltage());
 
-    if (stick->GetRawButton(7) and !*idleModeLatch) {
+    if (stick->GetRawButton(10) and !*idleModeLatch) {
         *idleModeToggle = !*idleModeToggle;
         *idleModeLatch = true;
     }
-    else if (!stick->GetRawButton(7) and *idleModeLatch) {
+    else if (!stick->GetRawButton(10) and *idleModeLatch) {
         *idleModeLatch = false;
     }
 
