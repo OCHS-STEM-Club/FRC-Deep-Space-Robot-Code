@@ -44,6 +44,12 @@ ManipulatorManager::ManipulatorManager() {
     *armToggle = 0;
     *armLatch = false;
 
+    handLatch = false;
+    handToggle = false;
+
+    downOutToggle = true;
+    upOutToggle = true;
+
     armMotor->SetNeutralMode(Brake);
     extendMotor->SetNeutralMode(Brake);
 
@@ -151,7 +157,7 @@ void ManipulatorManager::perimeterCheck() {
 
 void ManipulatorManager::manipulate() {
     pov = xbox->GetPOV();
-    frc::SmartDashboard::PutNumber("xbox pov", pov);
+    frc::SmartDashboard::PutNumber("xbox pov", xbox->GetPOV());
     
     //Checks the value of *outOfFramePerimeterBool
     if(!*outOfFramePerimeterBool) {
@@ -175,15 +181,29 @@ void ManipulatorManager::manipulate() {
     frc::SmartDashboard::PutNumber("potentiometer angle", *potDegrees);
     frc::SmartDashboard::PutNumber("Calculated Potentiometer Arm Angle", *currentPotentiometerArmAngle);
 
-    if (xbox->GetRawButton(1)) {
+ /*   if (xbox->GetRawButton(4) and !handLatch) {
+        handToggle = !handToggle;
+        handLatch = true;
+    }
+    else if (!xbox->GetRawButton(4) and handLatch) {
+        handLatch = false;
+    }
+
+    if (handToggle) {
         handMotor->Set(0.4);
     }
-    else if (xbox->GetRawButton(2)) {
-        handMotor->Set(-0.4);
-    }
-    else {
-        handMotor->Set(0);
-    }
+    else if (!handToggle) { */
+        if (xbox->GetRawButton(1)) {
+            handMotor->Set(0.75);
+        }
+        else if (xbox->GetRawButton(2)) {
+            handMotor->Set(-0.75);
+        }
+        else {
+            handMotor->Set(0);
+        }
+    //}
+
     frc::SmartDashboard::PutNumber("hand current", handMotor->GetOutputCurrent());
 
     frc::SmartDashboard::PutNumber("extend position", extendMotor->GetSensorCollection().GetQuadraturePosition());
@@ -211,25 +231,25 @@ void ManipulatorManager::manipulate() {
         //xbox->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.5);
     }
 
-    if (pov == -1) {
+    if (pov == -1 && !stick->GetRawButton(7) && !stick->GetRawButton(8)) {
         *armSpeed = xbox->GetRawAxis(5) * 0.45;
     }
 
     if (pov == -1) {
-        extendMotor->ConfigPeakOutputReverse(1);
+        extendMotor->ConfigPeakOutputReverse(-1);
         extendMotor->ConfigPeakOutputForward(1);
     }
     else {
-        extendMotor->ConfigPeakOutputReverse(0.4);
+        extendMotor->ConfigPeakOutputReverse(-0.4);
         extendMotor->ConfigPeakOutputForward(0.4);
     }
 
 
-    if (*currentPotentiometerArmAngle > 66 && *armSpeed > 0) {
+    if (*currentPotentiometerArmAngle > 66 && *armSpeed >= 0) {
         *armSpeed = 0;
         roatateBoundsCheck = false;
     }
-    else if (*currentPotentiometerArmAngle < -33 && *armSpeed < 0) {
+    else if (*currentPotentiometerArmAngle < -33 && *armSpeed <= 0) {
         *armSpeed = 0;
         roatateBoundsCheck = false;
     }
@@ -243,13 +263,13 @@ void ManipulatorManager::manipulate() {
     }
 
     if (roatateBoundsCheck && (pov == 180)) {
-        armError = (HATCHLOWEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+        armError = (HATCHLOWEXPECTED - *currentPotentiometerArmAngle) / 60.0;
 
-        if (armError > 0.45) {
-            armError = 0.45;
+        if (armError > AUTOARMTOPLIMIT) {
+            armError = AUTOARMTOPLIMIT;
         }
-        if (armError < -0.45) {
-            armError = -0.45;
+        if (armError < -AUTOARMTOPLIMIT) {
+            armError = -AUTOARMTOPLIMIT;
         }
 
         *armSpeed = armError;
@@ -257,13 +277,13 @@ void ManipulatorManager::manipulate() {
     }
 
     if (roatateBoundsCheck && (pov == 90)) {
-        armError = (HATCHLEVELTWOEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+        armError = (HATCHLEVELTWOEXPECTED - *currentPotentiometerArmAngle) / 60.0;
 
-        if (armError > 0.45) {
-            armError = 0.45;
+        if (armError > AUTOARMTOPLIMIT) {
+            armError = AUTOARMTOPLIMIT;
         }
-        if (armError < -0.45) {
-            armError = -0.45;
+        if (armError < -AUTOARMTOPLIMIT) {
+            armError = -AUTOARMTOPLIMIT;
         }
 
         *armSpeed = armError;
@@ -271,13 +291,13 @@ void ManipulatorManager::manipulate() {
     }
 
     if (roatateBoundsCheck && (pov == 270)) {
-        armError = (CARGOLEVELONEEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+        armError = (CARGOLEVELONEEXPECTED - *currentPotentiometerArmAngle) / 60.0;
 
-        if (armError > 0.45) {
-            armError = 0.45;
+        if (armError > AUTOARMTOPLIMIT) {
+            armError = AUTOARMTOPLIMIT;
         }
-        if (armError < -0.45) {
-            armError = -0.45;
+        if (armError < -AUTOARMTOPLIMIT) {
+            armError = -AUTOARMTOPLIMIT;
         }
 
         *armSpeed = armError;
@@ -285,18 +305,60 @@ void ManipulatorManager::manipulate() {
     }
 
     if (roatateBoundsCheck && (pov == 0)) {
-        armError = (CARGOLEVELTWOEXPECTED - *currentPotentiometerArmAngle) / 180.0;
+        armError = (CARGOLEVELTWOEXPECTED - *currentPotentiometerArmAngle) / 60.0;
 
-        if (armError > 0.45) {
-            armError = 0.45;
+        if (armError > AUTOARMTOPLIMIT) {
+            armError = AUTOARMTOPLIMIT;
         }
-        if (armError < -0.45) {
-            armError = -0.45;
+        if (armError < -AUTOARMTOPLIMIT) {
+            armError = -AUTOARMTOPLIMIT;
         }
 
         *armSpeed = armError;
         extendMotor->Set(ControlMode::Position, 20120.6);
     }
+
+    /*if (stick->GetRawButton(7) && roatateBoundsCheck) { //down an out
+        if (downOutToggle) {
+            armWant = *currentPotentiometerArmAngle - DOWNANDOUTANGLE;
+        }
+        downOutToggle = false;
+
+        armError = (armWant - *currentPotentiometerArmAngle) / 60.0;
+
+        if (armError > AUTOARMTOPLIMIT) {
+            armError = AUTOARMTOPLIMIT;
+        }
+        if (armError < -AUTOARMTOPLIMIT) {
+            armError = -AUTOARMTOPLIMIT;
+        }
+
+        *armSpeed = armError;
+    }
+    else {
+        downOutToggle = true;
+    } */
+
+   /* if (stick->GetRawButton(8) && roatateBoundsCheck) { //down an out
+        if (upOutToggle) {
+            armWant = *currentPotentiometerArmAngle + UPANDOUTANGLE;
+        }
+        upOutToggle = false;
+
+        armError = (armWant - *currentPotentiometerArmAngle) / 60.0;
+
+        if (armError > AUTOARMTOPLIMIT) {
+            armError = AUTOARMTOPLIMIT;
+        }
+        if (armError < -AUTOARMTOPLIMIT) {
+            armError = -AUTOARMTOPLIMIT;
+        }
+
+        *armSpeed = armError;
+    }
+    else {
+        upOutToggle = true;
+    } */
 
     armMotor->Set(*armSpeed);
 }

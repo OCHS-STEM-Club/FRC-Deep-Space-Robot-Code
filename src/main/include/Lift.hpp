@@ -11,7 +11,7 @@
 #define K_TIMEOUT_MS 10
 #define K_PID_LOOP_IDX 0
 
-#define LEFT_SETPOINT 5.518
+#define LEFT_SETPOINT 5.518  //tow celing for climb. prevents lift from going past point
 #define RIGHT_SETPOINT 5.456
 #define BACK_SETPOINT 5.229
 

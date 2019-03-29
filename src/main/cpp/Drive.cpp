@@ -110,7 +110,7 @@ void DriveManager::driveTrain() {
 
         if (stick->GetRawButton(1)) {
             *xStickValue = *xStickValue * 0.3;
-            *yStickValue = *yStickValue * 0.3;
+            *yStickValue = *yStickValue * 0.5;
             *zStickValue = *zStickValue * 0.3;
         }
 

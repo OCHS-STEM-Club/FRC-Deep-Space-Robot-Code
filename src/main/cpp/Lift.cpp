@@ -182,6 +182,16 @@ void LiftManager::Lift() {
             *rightPower = 0;
             *backPower = 0;
         }
+
+        if (*leftDistance > 5.589) {
+            *leftPower = 0.025;
+        }
+        if (*rightDistance > 5.527) {
+            *rightPower = 0.025;
+        }
+        if (*backDistance > 5.667) {
+            *backPower = 0.025;
+        } 
     }
 
     if (*liftToggle == 1) {
@@ -213,8 +223,8 @@ void LiftManager::Lift() {
                 *rightBoost = 0;
             }
 
-            *leftPower = *leftBoost + *verticalClimberSpeed * 0.6;
-            *rightPower = *rightBoost + *verticalClimberSpeed * 0.6;
+            *leftPower = *leftBoost + *verticalClimberSpeed * 0.85;
+            *rightPower = *rightBoost + *verticalClimberSpeed * 0.85;
         }
 
         if (*verticalClimberSpeed < 0) {
@@ -227,8 +237,8 @@ void LiftManager::Lift() {
                 *rightBoost = 0;
             }
 
-            *leftPower = (*leftBoost + *verticalClimberSpeed) * 0.8;
-            *rightPower = (*rightBoost + *verticalClimberSpeed) * 0.8;
+            *leftPower = (*leftBoost + *verticalClimberSpeed) * 1.2;
+            *rightPower = (*rightBoost + *verticalClimberSpeed) * 1.2;
         }
 
         if (*verticalClimberSpeed > -0.05) {

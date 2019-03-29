@@ -3,7 +3,8 @@
 PixyManager::PixyManager () {
   driveManager = new DriveManager();
 
-  I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS);
+  //I2CPixy = new frc::I2C(frc::I2C::Port::kMXP, I2C_ADDRESS);
+  I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS); 
   stick = new frc::Joystick{ 0 };
  
   target = 170;    
