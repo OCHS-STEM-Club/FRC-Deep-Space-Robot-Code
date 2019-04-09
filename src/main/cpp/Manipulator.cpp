@@ -90,7 +90,7 @@ ManipulatorManager::ManipulatorManager() {
 //     return convertedUnits;
 // }
 
-//Defines the maximumArmLength method which calculates the maximum arm length without breaking the frame perimeter
+//Defines the maximumArmLengthCalculator method which calculates the maximum arm length without breaking the frame perimeter
 double maximumArmLengthCalculator(double armAngle) {
     double maximumArmLength;
     double cosArmAngle;
