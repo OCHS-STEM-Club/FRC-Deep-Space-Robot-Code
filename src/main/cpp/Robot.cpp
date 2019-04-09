@@ -62,10 +62,10 @@ camera.SetFPS(10);  */
 void Robot::RobotPeriodic() {}
 
 void Robot::RunEric() {
-  pixyManager->pixy();
+  //pixyManager->pixy();
 
   if (stick->GetRawButton(12)) {
-    pixyManager->pixyFunct();
+    //pixyManager->pixyFunct();
   }
  /* else if (stick->GetRawButton(8)) {
     pixyManager->angleLineup();
@@ -95,7 +95,7 @@ void Robot::AutonomousInit() {
     // Default Auto goes here
   }
 
-driveManager->reset();
+//driveManager->reset();
 }
 
 void Robot::AutonomousPeriodic() {

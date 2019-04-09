@@ -5,8 +5,9 @@
 #include <frc/Joystick.h>
 #include <frc/I2C.h>
 #include <cmath>
+#include <AHRS.h> 
 
-#include "Drive.hpp"
+//#include "Drive.hpp"
 
 #define I2C_ADDRESS 0x64 
 
@@ -24,7 +25,7 @@ typedef unsigned char byte;
 
 class PixyManager {
 private:
-DriveManager *driveManager;
+//DriveManager *driveManager;
 
 frc::I2C *I2CPixy;
 frc::Joystick *stick; 

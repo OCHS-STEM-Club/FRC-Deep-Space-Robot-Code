@@ -274,7 +274,7 @@ void DriveManager::driveTrain() {
         mecanumDrive->DriveCartesian(*yStickValue, *xStickValue, turnCorrection, *driveGyro);
     } */
 }
-
+/*
 void DriveManager::control(double turn, double strafe, double drive, bool brake) { 
     mecanumDrive->DriveCartesian(strafe, drive, turn, 0);
 
@@ -317,4 +317,4 @@ void DriveManager::reset() {
 
     *integral = 0;
     *prevError = 0;
-}
+} */

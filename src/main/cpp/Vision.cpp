@@ -1,7 +1,7 @@
 #include "Vision.hpp"
 
 PixyManager::PixyManager () {
-  driveManager = new DriveManager();
+  //driveManager = new DriveManager();
 
   //I2CPixy = new frc::I2C(frc::I2C::Port::kMXP, I2C_ADDRESS);
   I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS); 
@@ -270,11 +270,11 @@ void PixyManager::pixyFunct() {
   frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    driveManager->control(turnCorrection ,strafeCorrectionToIdealCenter, driveCorrection, true);
+    //driveManager->control(turnCorrection ,strafeCorrectionToIdealCenter, driveCorrection, true);
     //driveManager->control(turnCorrection, strafeCorrectionToIdealCenter, 0, true);
   }
   else {
-    driveManager->control(0, 0, 0, true);
+    //driveManager->control(0, 0, 0, true);
   }
   
 }
@@ -305,7 +305,7 @@ void PixyManager::angleLineup() {
     turnCorrection = 0;
   }
 
-    driveManager->control(turnCorrection , 0, 0, true);
+    //driveManager->control(turnCorrection , 0, 0, true);
 }
 
 //angle lineup for rocket
@@ -333,7 +333,7 @@ void PixyManager::pixyRocketSides() {
   }
 
 //  if (goodTargets) {
-    driveManager->control(turnCorrection, 0, 0, true);
+    //driveManager->control(turnCorrection, 0, 0, true);
 //  }
 //  else {
 //    driveManager->control(0, 0, 0, true);
