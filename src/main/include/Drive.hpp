@@ -61,6 +61,8 @@ class DriveManager {
     bool *idleModeToggle;
     bool *idleModeLatch;
 
+    bool xStickRawValue;
+
     public:
     DriveManager();
     void driveTrain(); 

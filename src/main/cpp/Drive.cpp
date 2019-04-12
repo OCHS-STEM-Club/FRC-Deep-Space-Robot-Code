@@ -74,6 +74,27 @@ DriveManager::DriveManager () {
 
 }
 
+int Sign(double input) {
+    if (input > 0) {
+        return 1;
+    }
+    else if (input < 0) {
+        return -1;
+    }
+    else if (input == 0) {
+        return 0;
+    }
+}
+
+double deadband(double joystickValue, double deadbandValue) {
+    if(abs(joystickValue) < 0.2){
+        return 0;
+    }
+    else{
+        return (1 / (1 - deadbandValue)) * (joystickValue + (-Sign(joystickValue) * deadbandValue));
+    } 
+}
+
 void DriveManager::driveTrain() {
 
     //*xStickValue = -stick->GetRawAxis(0);
@@ -81,32 +102,44 @@ void DriveManager::driveTrain() {
     //*zStickValue = stick->GetRawAxis(2);
 
 
-        if (abs(stick->GetRawAxis(1)) < .2) {
+        /*if (abs(stick->GetRawAxis(1)) < .2) {
 			*xStickValue = 0;
 		}
 		else {
 			*xStickValue = -stick->GetRawAxis(1);
-		}
+		}*/
+        *xStickValue = deadband(-stick->GetRawAxis(1), 0.2);
 
 		//Repeat of above for Y
-		if (-stick->GetRawAxis(0) < -0.1 and -stick->GetRawAxis(0) > 0.4)
+		/*if (-stick->GetRawAxis(0) < -0.1 and -stick->GetRawAxis(0) > 0.4)
 		{
 			*yStickValue = 0;
 		}
 		else
 		{
 			*yStickValue = stick->GetRawAxis(0);
-		}
+		}*/
+        *yStickValue = deadband(stick->GetRawAxis(0), 0.2);
 
 		//Repeat of above for Z
-		if (stick->GetRawAxis(2) < .1 && stick->GetRawAxis(2) > -0.15)
+		/*if (stick->GetRawAxis(2) < .1 && stick->GetRawAxis(2) > -0.15)
 		{
 			*zStickValue = 0;
 		}
 		else
 		{
 			*zStickValue = stick->GetRawAxis(2);
-		}
+		}*/
+        *zStickValue = deadband(stick->GetRawAxis(2), 0.125);
+
+        /*xStickRawValue = stick->GetRawAxis(1);
+        if(abs(xStickRawValue) < 0.2){
+            *xStickValue = 0;
+        }
+        else{
+            xStickRawValue = (1/(1-0.2))*(xStickRawValue+(-Sign(xStickRawValue) * 0.2));
+        } */
+
 
         if (stick->GetRawButton(1)) {
             *xStickValue = *xStickValue * 0.3;
