@@ -43,6 +43,12 @@ class DriveManager {
     double *gyro;
     double *error;
 
+    double angle;
+    int revolutions;
+    double turnWant;
+    double turnOffset;
+    double turnCorrection;
+
     double *p;
     double *i;
     double *integral;
@@ -55,10 +61,12 @@ class DriveManager {
     bool *idleModeToggle;
     bool *idleModeLatch;
 
+    bool xStickRawValue;
+
     public:
     DriveManager();
     void driveTrain(); 
-    void control(double turn, double strafe, double drive , bool brake); 
-    void turn(int angle);
-    void reset();
+    //void control(double turn, double strafe, double drive , bool brake); 
+    //void turn(int angle);
+    //void reset();
 };

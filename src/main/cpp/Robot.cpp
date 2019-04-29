@@ -30,6 +30,7 @@ Robot::Robot() {
 }
 
 frc::Joystick *stick;
+frc::XboxController *xbox;
 
 void Robot::RobotInit() {
   m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
@@ -37,10 +38,15 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   stick = new frc::Joystick{ 0 };
+  xbox = new frc::XboxController{ 1 };
 
 /*cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture("1792", 0);
-camera.SetResolution(160, 120);
-camera.SetFPS(10); */
+camera.SetResolution(160, 120); //160,120
+camera.SetFPS(10);  */
+//camera.SetPixelFormat(cs::VideoMode::kGray); 
+//frc::CameraServer::RemoveCamera("1792");
+//UsbCamera.RemoveCamera("1792");
+//CameraServer::GetInstance()->RemoveCamera("1792");
 }
 
 
@@ -56,17 +62,24 @@ camera.SetFPS(10); */
 void Robot::RobotPeriodic() {}
 
 void Robot::RunEric() {
-  pixyManager->pixy();
+  //pixyManager->pixy();
 
   if (stick->GetRawButton(12)) {
-    pixyManager->pixyFunct();
+    //pixyManager->pixyFunct();
   }
+ /* else if (stick->GetRawButton(8)) {
+    pixyManager->angleLineup();
+  }
+  else if (stick->GetRawButton(7)) {
+    pixyManager->pixyRocketSides();
+  } */
   else {
     driveManager->driveTrain();
   } 
 
   liftManager->Lift();
 
+  manipulatorManager->perimeterCheck();
   manipulatorManager->manipulate();
 }
 
@@ -82,7 +95,7 @@ void Robot::AutonomousInit() {
     // Default Auto goes here
   }
 
-driveManager->reset();
+//driveManager->reset();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -117,6 +130,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  //CameraServer::GetInstance()->RemoveCamera("1792");
 }
 
 void Robot::TeleopPeriodic() {
@@ -132,6 +146,7 @@ void Robot::TeleopPeriodic() {
 
   liftManager->Lift();
 
+  manipulatorManager->perimeterCheck();
   manipulatorManager->manipulate(); */
 
   RunEric();

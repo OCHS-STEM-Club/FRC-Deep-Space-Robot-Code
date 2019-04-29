@@ -1,11 +1,12 @@
 #include "Vision.hpp"
 
 PixyManager::PixyManager () {
-  driveManager = new DriveManager();
+  //driveManager = new DriveManager();
 
-  I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS);
+  //I2CPixy = new frc::I2C(frc::I2C::Port::kMXP, I2C_ADDRESS);
+  I2CPixy = new frc::I2C(frc::I2C::Port::kOnboard, I2C_ADDRESS); 
   stick = new frc::Joystick{ 0 };
-
+ 
   target = 170;    
 
     //Gyro
@@ -159,10 +160,12 @@ void PixyManager::pixy() {
   
 }
 
+
+
 void PixyManager::pixyFunct() {
   distanceToIdealCenter = ((1.0 * Pixyx1 + Pixyx2) / 2) - PIXY_CENTER_X;
 
-  strafeCorrectionToIdealCenter = (distanceToIdealCenter/125) * 0.85;
+  strafeCorrectionToIdealCenter = (distanceToIdealCenter/100) * 0.865;
 
   if (strafeCorrectionToIdealCenter > ANTI_MISSILE_CODE) {
     strafeCorrectionToIdealCenter = ANTI_MISSILE_CODE;
@@ -180,10 +183,10 @@ void PixyManager::pixyFunct() {
 
   if(abs(PIXY_CENTER_X-xCenter) < PIXY_DEADBAND_X) {
     strafeCorrectionToIdealCenter = 0;
-    frc::SmartDashboard::PutBoolean("deadbandTest", true);
+    //frc::SmartDashboard::PutBoolean("deadbandTest", true);
   }
   else {
-    frc::SmartDashboard::PutBoolean("deadbandTest", false);
+    //frc::SmartDashboard::PutBoolean("deadbandTest", false);
   }
 
 //turn correction 
@@ -267,11 +270,72 @@ void PixyManager::pixyFunct() {
   frc::SmartDashboard::PutNumber("driveCorrection", driveCorrection);
 
   if (goodTargets) {
-    driveManager->control(turnCorrection ,strafeCorrectionToIdealCenter, driveCorrection, true);
+    //driveManager->control(turnCorrection ,strafeCorrectionToIdealCenter, driveCorrection, true);
     //driveManager->control(turnCorrection, strafeCorrectionToIdealCenter, 0, true);
   }
   else {
-    driveManager->control(0, 0, 0, true);
+    //driveManager->control(0, 0, 0, true);
   }
   
+}
+
+//angle lineup without pixy targets
+void PixyManager::angleLineup() {
+ if ((angle < 135) && (angle > 45)) {
+    turnWant = 90;
+  }
+  else if ((angle > 315) && (angle < 360)) {
+    turnWant = 360;
+  }
+  else if ((angle > 0) && (angle < 45)) {
+    turnWant = 0;
+  }
+  else if ((angle > 135) && (angle < 225)) {
+    turnWant = 180; 
+  }
+  else if ((angle > 225) && (angle < 315)) {
+    turnWant = 270;
+  }
+
+  turnOffset = turnWant - angle; 
+  turnCorrection = (1.0 * turnOffset/180) * 0.65;
+
+  frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
+  if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
+    turnCorrection = 0;
+  }
+
+    //driveManager->control(turnCorrection , 0, 0, true);
+}
+
+//angle lineup for rocket
+void PixyManager::pixyRocketSides() {
+  
+  if ((angle < 360) and (angle > 270)) {
+    turnWant = 299;
+  }
+  else if ((angle > 0) and (angle < 90)) {
+    turnWant = 61;
+  }
+  else if ((angle > 90) and (angle < 180)) {
+    turnWant = 119;
+  }
+  else if ((angle > 180) and (angle < 270)) {
+    turnWant = 241;
+  }
+
+  turnOffset = turnWant - angle; 
+  turnCorrection = (1.0 * turnOffset/180) * 0.65;
+
+  frc::SmartDashboard::PutNumber("turnOffset", turnOffset);
+  if (abs(turnOffset) < PIXY_DEADBAND_TURN) {
+    turnCorrection = 0;
+  }
+
+//  if (goodTargets) {
+    //driveManager->control(turnCorrection, 0, 0, true);
+//  }
+//  else {
+//    driveManager->control(0, 0, 0, true);
+ // }
 }
